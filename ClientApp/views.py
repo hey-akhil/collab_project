@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Booking
+
 def home(request):
     return render(request, 'app/home.html')
 
 def contact(request):
     return render(request,'app/contact.html')
+
+def ourServices(request):
+    return render(request,'app/what_we_offer.html')
 
 def book_appointment(request):
     if request.method == "POST":
@@ -27,3 +31,7 @@ def adminviewpage(req):
 def booking_list(request):
     bookings = Booking.objects.all().order_by('-datetime')  # latest first
     return render(request, 'app/admin/Appointment_booking_list.html', {'bookings': bookings})
+
+def reviews_page(request):
+    reviews = Review.objects.all().order_by('-date_posted')  # latest first
+    return render(request, 'reviews.html', {'reviews': reviews})

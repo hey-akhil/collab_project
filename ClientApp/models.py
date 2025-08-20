@@ -11,3 +11,17 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.service} on {self.datetime}"
+<<<<<<< HEAD
+=======
+
+
+class Review(models.Model):
+    customer_name = models.CharField(max_length=100)
+    review_text = models.TextField()
+    rating = models.IntegerField(default=5)  # 1–5 stars
+    date_posted = models.DateField(auto_now_add=True)
+    customer_photo = models.ImageField(upload_to='reviews/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.customer_name} - {self.rating}⭐"
+>>>>>>> 6ad4d2809a5a667223f52e3d939aea93c8fd37da
