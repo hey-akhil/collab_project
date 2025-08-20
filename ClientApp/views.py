@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Booking
+from .models import Booking,Review
 
 def home(request):
     return render(request, 'app/home.html')

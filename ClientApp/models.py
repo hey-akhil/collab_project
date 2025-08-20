@@ -11,9 +11,6 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.service} on {self.datetime}"
-<<<<<<< HEAD
-=======
-
 
 class Review(models.Model):
     customer_name = models.CharField(max_length=100)
@@ -24,4 +21,3 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.customer_name} - {self.rating}⭐"
->>>>>>> 6ad4d2809a5a667223f52e3d939aea93c8fd37da
