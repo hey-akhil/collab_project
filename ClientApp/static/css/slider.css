@@ -6,6 +6,13 @@
   position: relative;
 }
 
+.h2text{
+    font-family: fantasy;
+    text-align: left;
+    color: white;
+}
+
+
 /* Fixed caption styling */
 .carousel-caption-fixed {
   position: absolute;

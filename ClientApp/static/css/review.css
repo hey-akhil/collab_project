@@ -1,0 +1,132 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #faf5ef, #fffbe7);
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  text-align: center;
+  color: #006400;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.2rem;
+  margin-top: 30px;
+}
+
+/* Wrapper */
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 340px;
+  margin: 50px auto;
+  perspective: 1200px;
+  overflow: hidden; /* Prevent overflow on small screens */
+}
+
+/* Card */
+.carousel-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  width: 65%;
+  min-height: 240px;
+  padding: 25px 20px;
+  background: #ffffff;
+  border-radius: 18px;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.8s ease-in-out;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Profile image */
+.review-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #a0522d;
+  margin-bottom: 10px;
+}
+
+.carousel-card h5 {
+  margin: 8px 0 5px;
+  font-size: 1.2rem;
+  color: #8B4513;
+  font-weight: 600;
+}
+
+.carousel-card p {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4rem;
+}
+
+/* Star rating */
+.stars {
+  color: #FFD700;
+  font-size: 1.2rem;
+  margin: 8px 0;
+}
+
+/* Active / prev / next */
+.carousel-card.active {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  z-index: 3;
+}
+.carousel-card.prev {
+  opacity: 0.4;
+  transform: translateX(-160%) scale(0.8);
+  z-index: 2;
+}
+.carousel-card.next {
+  opacity: 0.4;
+  transform: translateX(60%) scale(0.8);
+  z-index: 2;
+}
+
+/* ------------------ RESPONSIVE FIXES ------------------ */
+
+/* Tablets (show smaller, keep prev/next) */
+@media (max-width: 992px) {
+  .carousel-wrapper {
+    height: 300px;
+  }
+  .carousel-card {
+    width: 75%;
+    min-height: 220px;
+  }
+  .carousel-card.prev {
+    transform: translateX(-130%) scale(0.75);
+  }
+  .carousel-card.next {
+    transform: translateX(30%) scale(0.75);
+  }
+}
+
+/* Mobiles (only show one card) */
+@media (max-width: 600px) {
+  .carousel-wrapper {
+    height: auto;
+    min-height: 280px;
+  }
+  .carousel-card {
+    width: 90%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%) scale(1);
+    opacity: 0;
+  }
+  .carousel-card.active {
+    opacity: 1;
+    z-index: 3;
+  }
+  /* Hide prev & next on mobile */
+  .carousel-card.prev,
+  .carousel-card.next {
+    display: none;
+  }
+}

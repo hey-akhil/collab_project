@@ -5,6 +5,10 @@
   gap: 20px;
   align-items: stretch;
 }
+section{
+  background: linear-gradient(135deg, #faf5ef, #fffbe7);
+
+}
 
 /* Service Card */
 .service-card {
@@ -41,7 +45,7 @@
 
 /* Shipment Box */
 .shipment-box {
-  background: #fff8e6;
+  background: #ffffff;
   padding: 25px;
   border-radius: 8px;
   text-align: left;
@@ -67,4 +71,8 @@
   .services {
     grid-template-columns: 1fr;
   }
+}
+
+.inp{
+    height: 46px;
 }
