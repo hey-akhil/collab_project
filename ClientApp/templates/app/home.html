@@ -43,7 +43,7 @@
 </section>
 
 <!---------------------------------------- Our story---------------------------------------->
-<section class="about-section py-5 p-4" style="margin-bottom: 110px;">
+<section class="about-section py-1 p-4" style="margin-bottom: 110px;">
   <div class="row align-items-center">
 
     <!-- Left Column -->
@@ -120,37 +120,43 @@
 <section class="stats-section">
   <div class="overlay">
     <div class="container text-center">
-      <div class="row align-items-center">
+      <div class="row align-items-center g-2 row2">
 
         <!-- Title -->
-        <div class="col-md-3 mb-3 mb-md-0">
-          <h3 class="stats-title">Our Company <br>In Number</h3>
+        <div class="col-md-3 mb-4 mb-md-0 stats-intro">
+          <h3 class="stats-title">Our Company <br>In Numbers</h3>
+          <div class="decor-line"></div>
         </div>
-        <hr style="width: 150px; height: 2px; background-color: red; border: none; transform: rotate(90deg);">
-        <!-- Stat 1 -->
-        <div class="col-md-3 mb-3 mb-md-0">
-          <h2 class="stats-number counter" data-target="599">0</h2>
+
+        <div class="col-md-3 mb-4 mb-md-0 stat-box">
+          <div class="stat-icon">
+<!--            <img src="{% static 'img/bride-icon.png' %}" alt="Brides Icon">-->
+          </div>
+          <h2 class="stats-number counter" data-target="199">0</h2>
           <p>Happy Brides Served</p>
         </div>
 
-        <!-- Stat 2 -->
-        <div class="col-md-3 mb-3 mb-md-0">
-          <h2 class="stats-number counter" data-target="50">0</h2>
-          <p>Locations Covered in Hyderabad</p>
+        <div class="col-md-3 mb-4 mb-md-0 stat-box">
+          <div class="stat-icon">
+<!--            <img src="{% static 'images/location-icon.png' %}" alt="Locations Icon">-->
+          </div>
+          <h2 class="stats-number counter" data-target="150">0</h2>
+          <p>Locations in Hyderabad</p>
         </div>
 
-        <!-- Stat 3 -->
-        <div class="col-md-3">
-          <h2 class="stats-number counter" data-target="1000">0</h2>
-          <p>Hands & Feet Beautifully Designed</p>
+        <div class="col-md-3 stat-box">
+          <div class="stat-icon">
+<!--            <img src="{% static 'images/henna-icon.png' %}" alt="Henna Icon">-->
+          </div>
+          <h2 class="stats-number counter" data-target="200">0</h2>
+          <p>Hands & Feet Designed</p>
         </div>
-
       </div>
     </div>
   </div>
 </section>
-
 <script src="{% static 'js/company_in_number.js'%}"></script>
+
 
 
 
