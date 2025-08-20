@@ -11,6 +11,10 @@ def contact(request):
 def ourServices(request):
     return render(request,'app/what_we_offer.html')
 
+def about(request):
+    return render(request, "app/about_us.html")
+
+
 def book_appointment(request):
     if request.method == "POST":
         Booking.objects.create(

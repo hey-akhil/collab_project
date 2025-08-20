@@ -5,10 +5,6 @@
   gap: 20px;
   align-items: stretch;
 }
-section{
-  background: linear-gradient(135deg, #faf5ef, #fffbe7);
-
-}
 
 /* Service Card */
 .service-card {
