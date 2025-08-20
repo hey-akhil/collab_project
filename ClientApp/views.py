@@ -20,3 +20,6 @@ def book_appointment(request):
         )
         return HttpResponse("✅ Booking Successful!")
     return render(request, "app/book_appointment.html")
+
+def admin(req):
+    pass
