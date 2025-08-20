@@ -1,16 +1,36 @@
+/* navbar.css */
 
-      /* Navbar */
-      .navbar {
-        background: #f8f9fa;;
-        padding: 0px 30px;
-        max-height: 100px !important;
-      }
-      .navbar-nav .nav-link {
-        color: black !important;
-        font-weight: 500;
-        margin: 0 10px;
-      }
+.navbar {
+  background: #f8f9fa;
+  padding: 0px 30px;
+  /* max-height removed to allow toggle to expand */
+}
 
+.navbar-nav .nav-link {
+  color: black !important;
+  font-weight: 500;
+  margin: 0 10px;
+}
 
+.btn-quote {
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
 
+/* Responsive mobile styles */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background-color: #f8f9fa;
+    padding: 1rem;
+  }
 
+  .navbar-nav .nav-link {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .btn-quote {
+    margin-top: 10px;
+  }
+}

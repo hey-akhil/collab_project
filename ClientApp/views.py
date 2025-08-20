@@ -8,9 +8,12 @@ def home(request):
 def contact(request):
     return render(request,'app/contact.html')
 
+def ourServices(request):
+    return render(request,'app/what_we_offer.html')
+
 def book_appointment(request):
     if request.method == "POST":
-        Booking.objects.create(
+        Booking.objects.all.create(
             service=request.POST["service"],
             datetime=request.POST["datetime"],
             email=request.POST["email"],
@@ -21,3 +24,14 @@ def book_appointment(request):
         return HttpResponse("✅ Booking Successful!")
     return render(request, "app/book_appointment.html")
 
+def adminviewpage(req):
+    context = {}
+    return render(req, 'app/admin/admin.html', context)
+
+def booking_list(request):
+    bookings = Booking.objects.all().order_by('-datetime')  # latest first
+    return render(request, 'app/admin/Appointment_booking_list.html', {'bookings': bookings})
+
+def reviews_page(request):
+    reviews = Review.objects.all().order_by('-date_posted')  # latest first
+    return render(request, 'reviews.html', {'reviews': reviews})

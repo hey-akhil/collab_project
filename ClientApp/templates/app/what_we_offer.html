@@ -1,0 +1,77 @@
+{% extends 'static_pages/base.html' %}
+{% block start%}
+{% load static%}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
+<body>
+
+  <h2 style="    margin-top:5rem;">✨ What We Offer – Mehndi Designs for Every Occasion</h2>
+  <p class="subtitle">
+    At <strong>Deepak Mehndi Art</strong>, we provide a wide range of Mehndi services to suit every style, occasion,
+    and tradition. Whether you’re preparing for your big day or celebrating a festival, we’ve got the perfect design for you.
+  </p>
+
+  <div class="services">
+    <!-- Bridal Mehndi -->
+    <div class="service-card">
+      <img src="{% static 'img/m1.jpg' %}" alt="Bridal Mehndi">
+      <h3>👰 Bridal Mehndi</h3>
+      <p>Intricate and elegant designs crafted with care to make every bride feel special on her big day.</p>
+      <a href="" class="btn">BOOK NOW</a>
+    </div>
+
+    <!-- Arabic Mehndi -->
+    <div class="service-card">
+      <img src="{% static 'img/m2.jpg' %}" alt="Arabic Mehndi">
+      <h3>💚 Arabic Mehndi</h3>
+      <p>Flowy, stylish patterns with floral and geometric motifs – perfect for a modern touch.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <!-- Indian Traditional Mehndi -->
+    <div class="service-card">
+      <img src="{% static 'img/m3.jpg' %}" alt="Indian Traditional Mehndi">
+      <h3>🇮🇳 Indian Traditional Mehndi</h3>
+      <p>Rich in cultural symbols like peacocks, paisleys, dulha-dulhan, mandalas, and more.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <!-- Indo-Western Fusion Mehndi -->
+    <div class="service-card">
+      <img src="{% static 'img/m4.jpg' %}" alt="Indo-Western Fusion Mehndi">
+      <h3>🌟 Indo-Western Fusion Mehndi</h3>
+      <p>A perfect mix of tradition and trend for today’s modern brides and events.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <div class="service-card">
+      <img src="{% static 'img/m5.jpg' %}" alt="3D & Glitter Mehndi">
+      <h3>✨ 3D & Glitter Mehndi</h3>
+      <p>Add sparkle to your celebrations with stylish, party-ready 3D and glitter mehndi.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <div class="service-card">
+      <img src="{% static 'img/m6.jpg' %}" alt="Bridesmaids & Guest Mehndi">
+      <h3>👰‍♀️ Bridesmaids & Guest Mehndi</h3>
+      <p>Quick, stylish, and budget-friendly designs for your loved ones.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <div class="service-card">
+      <img src="{% static 'img/m7.jpg' %}" alt="Festival Mehndi">
+      <h3>🕌 Festival Mehndi</h3>
+      <p>Special Mehndi for Karwa Chauth, Eid, Diwali, Teej, Rakhi, and other Indian festivals.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+
+    <div class="service-card">
+      <img src="{% static 'img/m8.jpg' %}" alt="Customization Available">
+      <h3>🎯 Customization Available:</h3>
+      <p>We create personalized designs based on your preferences, outfit, theme, or tradition.</p>
+      <a href="#" class="btn">BOOK NOW</a>
+    </div>
+  </div>
+
+{% endblock %}
+

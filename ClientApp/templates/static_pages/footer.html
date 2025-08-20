@@ -1,5 +1,10 @@
 {% load static %}
 {% block start %}
+<style>
+  .f-input{
+    height: 46px;
+  }
+</style>
 <footer class="bg-light text-dark pt-5 pb-3 mt-5 border-top p-3">
     <div class="row">
       <!-- Footer Links -->
@@ -39,7 +44,7 @@
         <h5 class="fw-bold mb-3">Subscribe</h5>
         <p class="small text-muted">Get our monthly updates straight to your inbox.</p>
         <form class="d-flex gap-2">
-          <input type="email" class="form-control form-control-sm" placeholder="Email address">
+          <input type="email" class="f-input form-control form-control-sm" placeholder="Email address">
           <button class="btn btn-primary btn-sm" type="submit">Subscribe</button>
         </form>
         <!-- Social Icons -->
