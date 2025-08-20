@@ -1,0 +1,64 @@
+body {
+      background-color: #1e1e2d;
+      color: #fff;
+    }
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #1e1e2d;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .sidebar .brand .logo {
+      background-color: #fff;
+      color: #1e1e2d;
+      border-radius: 4px;
+      font-weight: 900;
+      font-size: 1.2rem;
+      padding: 0 0.4rem;
+      display: inline-block;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #aaa;
+      padding: 0.7rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.3rem;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .sidebar nav a.active,
+    .sidebar nav a:hover {
+      background-color: #0d6efd;
+      color: #fff;
+    }
+    .sidebar nav a i {
+      font-size: 1.1rem;
+    }
+    .sidebar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      cursor: pointer;
+    }
+    .sidebar .user-info img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .sidebar .user-info span {
+      font-weight: 600;
+    }

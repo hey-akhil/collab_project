@@ -12,7 +12,6 @@ class Booking(models.Model):
     def __str__(self):
         return f"{self.name} - {self.service} on {self.datetime}"
 
-
 class Review(models.Model):
     customer_name = models.CharField(max_length=100)
     review_text = models.TextField()
