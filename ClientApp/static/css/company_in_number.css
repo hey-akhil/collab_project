@@ -1,0 +1,23 @@
+  .stats-section {
+  background: url("{% static 'images/stats-bg.jpg' %}") center/cover no-repeat;
+  position: relative;
+  color: #fff;
+}
+
+.stats-section .overlay {
+  background: rgba(0, 70, 0, 0.6);
+  padding: 60px 0;
+}
+
+.stats-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.stats-number {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffcc00;
+  margin-bottom: 10px;
+}

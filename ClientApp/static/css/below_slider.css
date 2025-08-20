@@ -1,0 +1,70 @@
+/* Services Grid */
+.services {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Service Card */
+.service-card {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s ease-in-out;
+}
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 15px rgba(0,0,0,0.15);
+}
+.service-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #3f6526;
+}
+.service-card p {
+  font-size: 15px;
+  margin-bottom: 15px;
+  color: #555;
+}
+.service-card a {
+  font-weight: bold;
+  color: #cc0000;
+  text-decoration: none;
+}
+.service-card a:hover {
+  text-decoration: underline;
+}
+
+/* Shipment Box */
+.shipment-box {
+  background: #fff8e6;
+  padding: 25px;
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+.shipment-box h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #3f6526;
+}
+.shipment-box p {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .services {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .services {
+    grid-template-columns: 1fr;
+  }
+}

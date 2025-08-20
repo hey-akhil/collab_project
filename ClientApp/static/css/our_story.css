@@ -1,0 +1,80 @@
+/* Experience Box */
+    .about-section .experience-box {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 10px 20px;
+      text-align: center;
+      border-radius: 5px;
+      color: #4b6d36;
+      z-index: 4; /* highest layer */
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-section .experience-box h3 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .about-section .experience-box p {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    /* Main Image */
+    .img1 {
+      width: 80%;
+      height: 410px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 5px;
+      position: relative;
+      z-index: 2; /* behind secondary image */
+    }
+
+    /* Secondary Image */
+    .img2 {
+      width: 250px;
+      height: 220px;
+      position: absolute;
+      bottom: -130px;
+      left: 73%;
+      transform: translateX(-50%);
+      border: 5px solid white;
+      border-radius: 5px;
+      z-index: 3; /* above main image */
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+      .img1 {
+        width: 100%;
+        height: auto;
+      }
+      .img2 {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        transform: none;
+        margin-top: 20px;
+        width: 100%;
+        height: auto;
+      }
+      .about-section .experience-box {
+        top: 10px;
+        left: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .about-section .experience-box h3 {
+        font-size: 24px;
+      }
+      .about-section .experience-box p {
+        font-size: 14px;
+      }
+    }

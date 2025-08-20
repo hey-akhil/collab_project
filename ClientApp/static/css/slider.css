@@ -1,0 +1,115 @@
+.carousel-item {
+  height: 100vh; /* Full screen for desktop */
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Fixed caption styling */
+.carousel-caption-fixed {
+  position: absolute;
+  top: 55%;
+  left: 10%;
+  z-index: 10;
+  text-align: left;
+  color: #fff;
+  max-width: 600px;
+}
+
+.carousel-caption-fixed h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.carousel-caption-fixed h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.carousel-caption-fixed p {
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+/* Custom button */
+.btn-custom {
+  background-color: #c9a227;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  padding: 10px 25px;
+}
+.btn-custom:hover {
+  background-color: #a88820;
+  color: #fff;
+}
+
+/* Custom dot indicators */
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #fff;
+  opacity: 0.7;
+}
+.carousel-indicators .active {
+  background-color: #c9a227;
+  opacity: 1;
+}
+
+/* Tablet adjustments */
+@media (max-width: 992px) {
+  .carousel-item {
+    height: 70vh; /* Reduce height */
+    min-height: 400px;
+  }
+  .carousel-caption-fixed {
+    top: 50%;
+    left: 8%;
+    max-width: 500px;
+  }
+  .carousel-caption-fixed h1 {
+    font-size: 2.5rem;
+  }
+  .carousel-caption-fixed h2 {
+    font-size: 1.5rem;
+  }
+  .carousel-caption-fixed p {
+    font-size: 1rem;
+  }
+  .btn-custom {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 576px) {
+  .carousel-item {
+    height: 50vh;   /* much smaller height */
+    min-height: 300px;
+  }
+  .carousel-caption-fixed {
+    top: 45%;
+    left: 5%;
+    max-width: 90%;
+    text-align: center;
+  }
+  .carousel-caption-fixed h1 {
+    font-size: 1.8rem;
+  }
+  .carousel-caption-fixed h2 {
+    font-size: 1.2rem;
+  }
+  .carousel-caption-fixed p {
+    font-size: 0.95rem;
+  }
+  .btn-custom {
+    font-size: 0.85rem;
+    padding: 7px 16px;
+  }
+}

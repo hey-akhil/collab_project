@@ -1,0 +1,157 @@
+{% extends 'static_pages/base.html' %}
+{% block start %}
+{% load static %}
+{% include 'app/slider1.html' %}
+<!--------------------------------- Services Section below slider --------------------------------->
+<!---->
+<section class="py-5 bg-light p-5">
+
+  <div class="services">
+    <div class="service-card">
+      <h3>Bridal Mehndi</h3>
+      <p>Elegant, rich, and personalised designs for your big day.</p>
+      <a href="#">➜ LEARN MORE</a>
+    </div>
+
+    <div class="service-card">
+      <h3>Arabic Mehndi</h3>
+      <p>Modern and flowing patterns for all occasions</p>
+      <a href="#">➜ LEARN MORE</a>
+    </div>
+
+    <div class="service-card">
+      <h3>Indian Traditional Mehndi</h3>
+      <p>Filled with cultural motifs and religious symbols.</p>
+      <a href="#">➜ LEARN MORE</a>
+    </div>
+
+    <div class="shipment-box">
+      <h2>Track Your Shipment</h2>
+      <hr />
+      <form>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Enter Tracking ID" aria-label="Tracking ID" />
+          <button class="btn btn-warning fw-bold" type="submit">➜</button>
+        </div>
+      </form>
+      <p>
+        Whether it’s a custom Mehndi cone delivery or a bridal booking
+        package, we ensure you stay informed.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!---------------------------------------- Our story---------------------------------------->
+<section class="about-section py-5 p-4" style="margin-bottom: 110px;">
+  <div class="row align-items-center">
+
+    <!-- Left Column -->
+    <div class="col-md-6 position-relative" style="margin-top: -90px">
+      <!-- Main Image -->
+      <img src="{% static 'img/1.jpg' %}" alt="Main Mehndi Artist" class="img-fluid shadow img1" />
+
+      <!-- Experience Box -->
+      <div class="experience-box">
+        <h3>15+</h3>
+        <p>Years of Experience</p>
+      </div>
+
+      <!-- Secondary Image -->
+      <img src="{% static 'img/4.jpg' %}" alt="Secondary Client Image" class="img2 shadow" />
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-md-6">
+      <p class="fw-semibold mb-1" style="font-family: 'Georgia', serif; color: #5a2d0c">
+        <strong>About Deepak Mehndi Art</strong>
+      </p>
+
+      <h2 class="mb-4 fw-bold" style="color: #3f6526">
+        Our Story – Hyderabad’s Most Loved Mehndi Artist
+      </h2>
+
+      <p class="mb-4">
+        At <strong>Deepak Mehndi Art</strong>, we believe that Mehndi is
+        not just a design—it’s an emotion, a tradition, and an art that
+        adds beauty to every celebration. With over
+        <strong>10+ years of hands-on experience</strong>, we have earned
+        a name as one of the
+        <strong>most trusted and popular Mehndi artists in Hyderabad</strong>,
+        especially in <strong>Madhapur and nearby areas</strong>.
+      </p>
+
+      <!-- Mission -->
+      <div class="missionAndVison mb-5">
+        <div>
+          <h5 class="mb-1" style="color: #cc0000">
+            🎯 <strong>Our Mission</strong>
+          </h5>
+          <p>
+            To enhance your beauty and celebration through artistic Mehndi
+            that speaks tradition, culture, and elegance.
+          </p>
+        </div>
+
+        <!-- Vision -->
+        <div>
+          <h5 class="mb-1" style="color: #ffaa00">
+            🌟 <strong>Our Vision</strong>
+          </h5>
+          <p>
+            To be Hyderabad’s most preferred Mehndi brand by offering
+            unmatched quality, personalized service, and creative designs
+            for every occasion.
+          </p>
+        </div>
+      </div>
+
+      <!-- Button -->
+      <a href="#" class="btn btn-warning fw-bold px-4 py-2">
+        DISCOVER MORE
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!------------------------------------Our company in number ----------------------------------------->
+<link rel="stylesheet" href="{% static 'css/company_in_number.css'%}">
+<section class="stats-section">
+  <div class="overlay">
+    <div class="container text-center">
+      <div class="row align-items-center">
+
+        <!-- Title -->
+        <div class="col-md-3 mb-3 mb-md-0">
+          <h3 class="stats-title">Our Company <br>In Number</h3>
+        </div>
+        <hr style="width: 150px; height: 2px; background-color: red; border: none; transform: rotate(90deg);">
+        <!-- Stat 1 -->
+        <div class="col-md-3 mb-3 mb-md-0">
+          <h2 class="stats-number counter" data-target="599">0</h2>
+          <p>Happy Brides Served</p>
+        </div>
+
+        <!-- Stat 2 -->
+        <div class="col-md-3 mb-3 mb-md-0">
+          <h2 class="stats-number counter" data-target="50">0</h2>
+          <p>Locations Covered in Hyderabad</p>
+        </div>
+
+        <!-- Stat 3 -->
+        <div class="col-md-3">
+          <h2 class="stats-number counter" data-target="1000">0</h2>
+          <p>Hands & Feet Beautifully Designed</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'js/company_in_number.js'%}"></script>
+
+
+
+{% endblock %}

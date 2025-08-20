@@ -1,0 +1,78 @@
+{% extends 'static_pages/base.html' %}
+{% load static %}
+{% block start %}
+<link rel="stylesheet" href="{% static 'css/booking.css' %}">
+
+<div class="booking-wrapper">
+  <h2 class="mb-4 text-center">Book Your Appointment</h2>
+
+  <form id="bookingForm" method="POST">
+    {% csrf_token %}
+    <div class="row">
+
+      <!-- Left Column: Form Inputs -->
+      <div class="col-md-7">
+        <!-- Service Selection -->
+        <div class="mb-3">
+          <label for="service">Service</label>
+          <select id="service" name="service" class="form-control" required>
+            <option value="Bridal Mehndi" data-price="200">Bridal Mehndi – $200</option>
+            <option value="Engagement Mehndi" data-price="150">Engagement Mehndi – $150</option>
+            <option value="Arabic Mehndi" data-price="100">Arabic Mehndi – $100</option>
+            <option value="Traditional Indian Mehndi" data-price="120">Traditional Indian Mehndi – $120</option>
+          </select>
+        </div>
+
+        <!-- Date & Time Picker -->
+        <div class="mb-3">
+          <label for="datetime">Select Date & Time</label>
+          <input type="datetime-local" id="datetime" name="datetime" class="form-control" required>
+        </div>
+
+        <!-- Personal Info -->
+        <h4 class="mt-4">Personal Information</h4>
+        <div class="mb-3">
+          <label>Name *</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Phone *</label>
+          <input type="tel" name="phone" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Email *</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label>Description</label>
+          <textarea name="description" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <!-- Right Column: Booking Overview -->
+      <div class="col-md-5">
+        <h4>Booking Overview</h4>
+        <div class="overview-card p-3 mb-3">
+          <table class="table table-bordered">
+            <tr><th>Location</th><td>Deepak Mehndi Art – Hyderabad</td></tr>
+            <tr><th>Service</th><td id="overview-service"></td></tr>
+            <tr><th>Worker</th><td>Deepak Mehndi Artist</td></tr>
+            <tr><th>Price</th><td id="overview-price"></td></tr>
+            <tr><th>Date & Time</th><td id="overview-datetime"></td></tr>
+          </table>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-warning flex-grow-1">Submit</button>
+          <button type="reset" class="btn btn-secondary flex-grow-1">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<script src="{% static 'js/book_appointment.js'%}"></script>
+{% endblock %}
