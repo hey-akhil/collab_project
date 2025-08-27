@@ -1,8 +1,10 @@
-{% extends 'static_pages/base.html' %}
+{% extends 'app/admin/admin.html' %}
 {% load static %}
-{% block start %}
-<!-- Do NOT extend base.html -->
-<h1 style="color: white;">Appointments</h1>
+
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+<h1 class="mb-4 text-black">Appointments</h1>
 
 {% if bookings %}
   <table class="table table-dark table-striped">

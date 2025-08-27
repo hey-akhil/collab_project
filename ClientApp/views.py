@@ -4,11 +4,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Booking
 from .forms import RegisterForm, LoginForm
-from .models import Booking,Review
+from .models import Booking,Review,OrderItem,Order
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 def home(request):
     return render(request, 'app/home.html')
@@ -24,6 +25,9 @@ def about(request):
 
 def cone_order(request):
     return render(request, "app/cone_order.html")
+
+def profile(request):
+    return render(request, "app/profile.html")
 
 def book_appointment(request):
     success = False
@@ -92,3 +96,68 @@ def logout_user(request):
     logout(request)
     return redirect("login")
 
+def place_order(request):
+    if request.method == "POST":
+        fullname = request.POST.get("fullname")
+        contact = request.POST.get("contact")
+        add1 = request.POST.get("add1")
+        street = request.POST.get("street")
+        city = request.POST.get("city")
+        zipcode = request.POST.get("zipcode")
+        country = request.POST.get("county", "India")
+
+        colors = request.POST.getlist("color[]")
+        quantities = request.POST.getlist("qty[]")
+
+        shipping_charge = Decimal(50)
+        total_price = Decimal(0)
+
+        for i, color in enumerate(colors):
+            price = get_price_for_color(color)
+            qty = int(quantities[i])
+            total_price += price * qty
+
+        final_total = total_price + shipping_charge
+
+        order = Order.objects.create(
+            fullname=fullname,
+            contact=contact,
+            address_line1=add1,
+            street=street,
+            city=city,
+            zipcode=zipcode,
+            country=country,
+            total_price=total_price,
+            shipping_charge=shipping_charge,
+            final_total=final_total,
+        )
+
+        for i, color in enumerate(colors):
+            price = get_price_for_color(color)
+            qty = int(quantities[i])
+            OrderItem.objects.create(
+                order=order,
+                color=color,
+                quantity=qty,
+                line_total=price * qty
+            )
+
+        # Set success message
+        messages.success(request, f"Your order (ID: {order.id}) has been placed successfully!")
+
+        return redirect('order')  # back to the form page
+
+    # if GET request, fallback
+    return redirect('order')
+
+def admin_dashboard(request):
+    return render(request, 'app/admin/admin_dashboard.html')
+
+def get_price_for_color(color):
+    """Return price for each mehndi color."""
+    prices = {
+        "Classic Brown": Decimal(100),
+        "Bold Black": Decimal(120),
+        "Reddish Maroon": Decimal(150),
+    }
+    return prices.get(color, Decimal(0))
