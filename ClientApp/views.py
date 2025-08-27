@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
+
 from .models import Booking
 from .forms import RegisterForm, LoginForm
 from .models import Booking,Review
@@ -100,3 +102,13 @@ from django.shortcuts import render
 def admin_dashboard(request):
     return render(request, 'app/admin/admin_dashboard.html')
 
+from django.shortcuts import get_object_or_404, redirect
+
+def appointment_booking_list(request):
+    bookings = Booking.objects.all().order_by('-created_at')
+    return render(request, 'app/admin/Appointment_booking_list.html', {'bookings': bookings})
+
+def delete_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    booking.delete()
+    return redirect(reverse('Appointment_booking_list'))

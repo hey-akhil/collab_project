@@ -16,5 +16,6 @@ urlpatterns = [
     path("order/", views.cone_order, name="order"),
     path("my-profile/", views.profile, name="profile"),
     path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
-
+    path('appointments/', views.appointment_booking_list, name='Appointment_booking_list'),
+    path('appointments/delete/<int:booking_id>/', views.delete_booking, name='delete_booking'),
 ]
