@@ -1,0 +1,112 @@
+body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .supplychain-section {
+      position: relative;
+      /* background: url('{% static 'img/service_bg.webp' %}') center/cover no-repeat; */
+      color: white;
+      padding: 60px 10%;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Overlay */
+    .supplychain-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .container {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      z-index: 2;
+      width: 100%;
+    }
+
+    /* Left column */
+    .left-col {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      justify-items: center;
+    }
+
+    .chart-box {
+      text-align: center;
+    }
+
+    .circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 6px solid #F9A634;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0 auto 10px;
+    }
+
+    .chart-box h3 {
+      font-size: 14px;
+      font-weight: normal;
+      margin: 0;
+    }
+
+    /* Right column */
+    .right-col {
+      flex: 1;
+      padding-left: 50px;
+    }
+
+    .right-col h4 {
+      color: #F9A634;
+      font-style: italic;
+      margin: 0 0 10px;
+    }
+
+    .right-col h2 {
+      font-size: 32px;
+      margin: 10px 0;
+      font-weight: bold;
+      line-height: 1.3;
+    }
+
+    .right-col p {
+      margin: 20px 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #ddd;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #F9A634;
+      color: black;
+      padding: 12px 24px;
+      text-decoration: none;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .btn:hover {
+      background: #d68b20;
+    }
+
+    @media (max-width: 900px) {
+      .supplychain-section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .right-col {
+        padding-left: 0;
+        margin-top: 30px;
+      }
+    }
