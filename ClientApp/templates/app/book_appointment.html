@@ -10,9 +10,8 @@
     {% csrf_token %}
     <div class="row">
 
-      <!-- Left Column: Form Inputs -->
+      <!-- Left Column -->
       <div class="col-md-7">
-        <!-- Service Selection -->
         <div class="mb-3">
           <label for="service">Service</label>
           <select id="service" name="service" class="form-control" required>
@@ -23,13 +22,11 @@
           </select>
         </div>
 
-        <!-- Date & Time Picker -->
         <div class="mb-3">
           <label for="datetime">Select Date & Time</label>
           <input type="datetime-local" id="datetime" name="datetime" class="form-control" required>
         </div>
 
-        <!-- Personal Info -->
         <h4 class="mt-4">Personal Information</h4>
         <div class="mb-3">
           <label>Name *</label>
@@ -50,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Right Column: Booking Overview -->
+      <!-- Right Column -->
       <div class="col-md-5">
         <h4>Booking Overview</h4>
         <div class="overview-card p-3 mb-3">
@@ -63,7 +60,6 @@
           </table>
         </div>
 
-        <!-- Submit Buttons -->
         <div class="d-flex gap-2">
           <button type="submit" class="btn btn-warning flex-grow-1">Submit</button>
           <button type="reset" class="btn btn-secondary flex-grow-1">Cancel</button>
@@ -75,4 +71,17 @@
 </div>
 
 <script src="{% static 'js/book_appointment.js'%}"></script>
+
+{% if success %}
+<script>
+Swal.fire({
+  icon: 'success',
+  title: 'Booking Successful!',
+  text: 'Your appointment has been booked successfully.',
+  confirmButtonColor: '#3085d6',
+  confirmButtonText: 'OK'
+});
+</script>
+{% endif %}
+
 {% endblock %}

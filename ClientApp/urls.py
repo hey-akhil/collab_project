@@ -10,6 +10,11 @@ urlpatterns = [
     path('make-my-booking/', views.book_appointment, name="booking"),
     path('our-services/', views.ourServices, name="our_services"),
     path("about-us/", views.about, name="about"),
+    path('register/', views.register_user, name='register'),
+    path('login/', views.login_user, name='login'),
+    path('logout/', views.logout_user, name='logout'),
     path("order/", views.cone_order, name="order"),
+    path("my-profile/", views.profile, name="profile"),
+    path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
 
 ]
