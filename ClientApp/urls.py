@@ -9,4 +9,6 @@ urlpatterns = [
     path('Appointment_booking_list/', views.booking_list, name="Appointment_booking_list"),
     path('make-my-booking/', views.book_appointment, name="booking"),
     path('our-services/', views.ourServices, name="our_services"),
+    path("about-us/", views.about, name="about"),
+
 ]
