@@ -4,7 +4,9 @@ h2, h4 {
   color: #333;
   margin-bottom: 20px;
 }
-
+body{
+    background :linear-gradient(135deg, #faf5ef, #fffbe7);
+}
 /* Labels */
 label {
   font-weight: 600;
