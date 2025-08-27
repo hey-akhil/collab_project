@@ -25,6 +25,9 @@ def about(request):
 def cone_order(request):
     return render(request, "app/cone_order.html")
 
+def profile(request):
+    return render(request, "app/profile.html")
+
 def book_appointment(request):
     success = False
     if request.method == "POST":
@@ -91,4 +94,9 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("login")
+
+from django.shortcuts import render
+
+def admin_dashboard(request):
+    return render(request, 'app/admin/admin_dashboard.html')
 
