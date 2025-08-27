@@ -9,7 +9,6 @@ body {
     /* About Section */
     .about-section {
       padding: 1px 10%;
-      background: #fff;
     }
     .about-content {
       display: flex;
@@ -35,12 +34,6 @@ body {
       border-radius: 12px;
     }
 
-    /* Why Us Section */
-    .why-us {
-      padding: 1px 10%;
-      background: #ffffff;
-
-    }
     .why-us h2 {
       font-size: 2rem;
       margin-bottom: 40px;
