@@ -1,6 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Booking
+from .forms import RegisterForm, LoginForm
 from .models import Booking,Review
+from django.utils.dateparse import parse_datetime
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 def home(request):
     return render(request, 'app/home.html')
@@ -18,17 +26,23 @@ def cone_order(request):
     return render(request, "app/cone_order.html")
 
 def book_appointment(request):
+    success = False
     if request.method == "POST":
-        Booking.objects.all.create(
-            service=request.POST["service"],
-            datetime=request.POST["datetime"],
-            email=request.POST["email"],
-            name=request.POST["name"],
-            phone=request.POST["phone"],
-            description=request.POST.get("description", "")
-        )
-        return HttpResponse("✅ Booking Successful!")
-    return render(request, "app/book_appointment.html")
+        try:
+            Booking.objects.create(
+                service=request.POST["service"],
+                datetime=parse_datetime(request.POST["datetime"]),
+                email=request.POST["email"],
+                name=request.POST["name"],
+                phone=request.POST["phone"],
+                description=request.POST.get("description", "")
+            )
+            success = True
+        except Exception as e:
+            print("Booking Error:", e)  # Debugging log
+
+    return render(request, "app/book_appointment.html", {"success": success})
+
 
 def adminviewpage(req):
     context = {}
@@ -41,3 +55,40 @@ def booking_list(request):
 def reviews_page(request):
     reviews = Review.objects.all().order_by('-date_posted')  # latest first
     return render(request, 'reviews.html', {'reviews': reviews})
+
+def register_user(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data["username"],
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password"]
+            )
+            messages.success(request, "Registration successful! Please login.")
+            return redirect("login")
+    else:
+        form = RegisterForm()
+    return render(request, "app/register.html", {"form": form})
+
+def login_user(request):
+    if request.method == "POST":
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data["username"],
+                password=form.cleaned_data["password"]
+            )
+            if user:
+                login(request, user)
+                return redirect("home")
+            else:
+                messages.error(request, "Invalid credentials")
+    else:
+        form = LoginForm()
+    return render(request, "app/login.html", {"form": form})
+
+def logout_user(request):
+    logout(request)
+    return redirect("login")
+
