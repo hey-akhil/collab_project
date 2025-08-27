@@ -1,0 +1,259 @@
+{% extends 'static_pages/base.html' %}
+{% load static %}
+{% block start %}
+<link rel="stylesheet" href="{% static 'css/booking.css' %}">
+
+<div class="booking-wrapper">
+  <h2 class="mb-4 text-center">Place Your Mehndi Order</h2>
+
+  <form id="orderForm" method="POST">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+
+      <!-- LEFT SIDE: Customer & Shipping Info -->
+      <div class="col-md-6">
+        <!-- Personal Information -->
+        <div class="mb-3">
+          <label for="fullname">Full Name *</label>
+          <input type="text" class="form-control" id="fullname" name="fullname" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="contact">Contact Number *</label>
+          <input type="tel" class="form-control" id="contact" name="contact" required pattern="[0-9]{10}" placeholder="10-digit number">
+        </div>
+
+        <!-- Address -->
+        <h5 class="mt-4">Shipping Address</h5>
+
+        <div class="mb-3">
+          <label for="add1">Address Line 1 *</label>
+          <input type="text" class="form-control" id="add1" name="add1" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="street">Street *</label>
+          <input type="text" class="form-control" id="street" name="street" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="city">City *</label>
+          <input type="text" class="form-control" id="city" name="city" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="zipcode">Zip Code *</label>
+          <input type="text" class="form-control" id="zipcode" name="zipcode" required pattern="[0-9]{6}">
+        </div>
+
+        <div class="mb-3">
+          <label for="county">Country</label>
+          <input type="text" class="form-control bg-light" id="county" name="county" value="India" readonly>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: Product Order Summary -->
+      <div class="col-md-6">
+        <h5 class="mb-3">Order Details</h5>
+
+        <div id="productLinesContainer">
+          <!-- Product lines will be added here dynamically -->
+        </div>
+
+        <button type="button" class="btn btn-outline-primary mb-3" id="addProductBtn">+ Add Another Color</button>
+
+        <div class="form-check mb-4">
+          <input class="form-check-input" type="checkbox" id="confirm" required>
+          <label class="form-check-label" for="confirm">
+            I confirm the above details are correct.
+          </label>
+        </div>
+        <hr>
+
+        <!-- Summary below buttons -->
+        <div id="summaryCharges" style="font-weight: 700; font-size: 1.2rem;">
+          <div class="d-flex justify-content-between mb-2" style="font-size: 1.3rem; font-weight: 800; color: #d9534f;">
+            <span>Total Price:</span>
+            <span id="grandTotalSummary">₹0</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2" style="font-size: 1.3rem; font-weight: 800; color: #d9534f;">
+            <span>Shipping Charge:</span>
+            <span id="shippingChargeSummary">₹50</span>
+          </div>
+          <div class="d-flex justify-content-between" style="font-size: 1.3rem; font-weight: 800; color: #d9534f;">
+            <span>Final Total:</span>
+            <span id="finalTotalSummary">₹50</span>
+          </div>
+        </div>
+        <br>
+
+        <div class="d-flex gap-2 mb-3">
+          <button type="submit" class="btn btn-warning flex-grow-1">📦 Place Order</button>
+          <button type="reset" class="btn btn-secondary flex-grow-1" id="resetBtn">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<script>
+  const shippingChargeAmount = 50;  // Set shipping charge here
+
+  const container = document.getElementById('productLinesContainer');
+  const grandTotalSummary = document.getElementById('grandTotalSummary');
+  const shippingChargeSummary = document.getElementById('shippingChargeSummary');
+  const finalTotalSummary = document.getElementById('finalTotalSummary');
+
+  // Available mehndi options
+  const mehndiOptions = [
+    { value: "Classic Brown", price: 100 },
+    { value: "Bold Black", price: 120 },
+    { value: "Reddish Maroon", price: 150 }
+  ];
+
+  // Add initial product line on page load
+  addProductLine();
+
+  document.getElementById('addProductBtn').addEventListener('click', () => {
+    addProductLine();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    container.innerHTML = '';
+    addProductLine();
+    updateGrandTotal();
+    document.getElementById('confirm').checked = false;
+  });
+
+  // Function to add a product line
+  function addProductLine() {
+    const lineId = `productLine_${Date.now()}`;
+
+    const div = document.createElement('div');
+    div.className = 'product-line mb-3 d-flex gap-2 align-items-center';
+    div.id = lineId;
+
+    // Color select
+    const colorSelect = document.createElement('select');
+    colorSelect.className = 'form-control flex-grow-1';
+    colorSelect.name = 'color[]';
+    colorSelect.required = true;
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Choose a color';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    colorSelect.appendChild(defaultOption);
+
+    mehndiOptions.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = `${opt.value} – ₹${opt.price}`;
+      option.setAttribute('data-price', opt.price);
+      colorSelect.appendChild(option);
+    });
+
+    // Quantity input
+    const qtyInput = document.createElement('input');
+    qtyInput.type = 'number';
+    qtyInput.className = 'form-control';
+    qtyInput.name = 'qty[]';
+    qtyInput.value = 1;
+    qtyInput.min = 1;
+    qtyInput.required = true;
+    qtyInput.style.maxWidth = '80px';
+
+    // Line total price display with label
+    const lineTotalWrapper = document.createElement('div');
+    lineTotalWrapper.style.minWidth = '110px';
+    lineTotalWrapper.style.fontWeight = '700';
+    lineTotalWrapper.style.fontSize = '1.1rem';
+    lineTotalWrapper.style.display = 'flex';
+    lineTotalWrapper.style.flexDirection = 'column';
+    lineTotalWrapper.style.textAlign = 'center';
+    lineTotalWrapper.style.color = '#d9534f';
+
+    const lineTotalLabel = document.createElement('span');
+    lineTotalLabel.textContent = 'Total';
+
+    const lineTotalSpan = document.createElement('span');
+    lineTotalSpan.textContent = '₹0';
+
+    lineTotalWrapper.appendChild(lineTotalLabel);
+    lineTotalWrapper.appendChild(lineTotalSpan);
+
+    // Remove button
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-danger btn-sm';
+    removeBtn.textContent = 'Remove';
+
+    removeBtn.addEventListener('click', () => {
+      div.remove();
+      updateGrandTotal();
+    });
+
+    // Event listeners to update prices on changes
+    colorSelect.addEventListener('change', () => {
+      updateLinePrices(div);
+    });
+
+    qtyInput.addEventListener('input', () => {
+      updateLinePrices(div);
+    });
+
+    // Append elements: select, qty, line total, remove button
+    div.appendChild(colorSelect);
+    div.appendChild(qtyInput);
+    div.appendChild(lineTotalWrapper);
+    div.appendChild(removeBtn);
+
+    container.appendChild(div);
+
+    updateLinePrices(div);
+  }
+
+  // Update unit price and line total for one product line
+  function updateLinePrices(lineDiv) {
+    const colorSelect = lineDiv.querySelector('select');
+    const qtyInput = lineDiv.querySelector('input[type="number"]');
+    const lineTotalSpan = lineDiv.querySelector('div:nth-child(3) span:nth-child(2)'); // line total span inside wrapper
+
+    const selectedOption = colorSelect.options[colorSelect.selectedIndex];
+    if (!selectedOption || !qtyInput.value || selectedOption.value === '') {
+      lineTotalSpan.textContent = '₹0';
+      updateGrandTotal();
+      return;
+    }
+
+    const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+    const quantity = parseInt(qtyInput.value) || 0;
+
+    const lineTotal = pricePerUnit * quantity;
+    lineTotalSpan.textContent = `₹${lineTotal.toLocaleString('en-IN')}`;
+
+    updateGrandTotal();
+  }
+
+  // Calculate and update grand total, shipping charge, and final total
+  function updateGrandTotal() {
+    let total = 0;
+    const allLines = document.querySelectorAll('.product-line');
+
+    allLines.forEach(line => {
+      const lineTotalText = line.querySelector('div:nth-child(3) span:nth-child(2)').textContent; // line total span
+      const num = parseFloat(lineTotalText.replace(/[₹,]/g, '')) || 0;
+      total += num;
+    });
+
+    grandTotalSummary.textContent = `₹${total.toLocaleString('en-IN')}`;
+    shippingChargeSummary.textContent = `₹${shippingChargeAmount.toLocaleString('en-IN')}`;
+
+    const finalTotal = total + shippingChargeAmount;
+    finalTotalSummary.textContent = `₹${finalTotal.toLocaleString('en-IN')}`;
+  }
+</script>
+
+{% endblock %}
