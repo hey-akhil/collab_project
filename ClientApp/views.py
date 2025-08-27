@@ -26,6 +26,9 @@ def about(request):
 def cone_order(request):
     return render(request, "app/cone_order.html")
 
+def profile(request):
+    return render(request, "app/profile.html")
+
 def book_appointment(request):
     success = False
     if request.method == "POST":
@@ -147,6 +150,8 @@ def place_order(request):
     # if GET request, fallback
     return redirect('order')
 
+def admin_dashboard(request):
+    return render(request, 'app/admin/admin_dashboard.html')
 
 def get_price_for_color(color):
     """Return price for each mehndi color."""
