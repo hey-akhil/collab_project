@@ -22,6 +22,9 @@ def ourServices(request):
 def about(request):
     return render(request, "app/about_us.html")
 
+def cone_order(request):
+    return render(request, "app/cone_order.html")
+
 def book_appointment(request):
     success = False
     if request.method == "POST":
