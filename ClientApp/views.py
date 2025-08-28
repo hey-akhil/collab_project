@@ -1,26 +1,18 @@
-from time import timezone
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.http import HttpResponse
-from django.shortcuts import render
+import json
+from decimal import Decimal
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone as dj_timezone
-from .models import Booking
-from django.http import JsonResponse
-from .forms import RegisterForm, LoginForm
-from .models import Booking,Review,OrderItem,Order
 from django.utils.dateparse import parse_datetime
-from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from decimal import Decimal
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import CartItem, Product
-from .forms import ProductForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+
+from .models import *
+from .forms import RegisterForm, LoginForm, ProductForm
 
 
 def home(request):
@@ -38,8 +30,17 @@ def about(request):
 def cone_order(request):
     return render(request, "app/cone_order.html")
 
-def profile(request):
-    return render(request, "app/profile.html")
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        user = request.user
+        user.username = new_username
+        user.email = new_email
+        user.save()
+        return redirect('profile')
+    return render(request, 'app/profile.html')
 
 def book_appointment(request):
     success = False
@@ -289,3 +290,99 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     return redirect('manage_products')
+
+
+@login_required
+def checkout_view(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    total_price = sum(item.subtotal for item in cart_items)
+    shipping_charge = 50
+    final_total = total_price + shipping_charge
+
+    return render(request, 'app/cone_order.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'shipping_charge': shipping_charge,
+        'final_total': final_total,
+    })
+
+@login_required
+def place_order(request):
+    if request.method == "POST":
+        user = request.user
+
+        fullname = request.POST.get("fullname")
+        contact = request.POST.get("contact")
+        add1 = request.POST.get("add1")
+        street = request.POST.get("street")
+        city = request.POST.get("city")
+        zipcode = request.POST.get("zipcode")
+        country = request.POST.get("county", "India")
+        total_price = request.POST.get("total_price", 0)
+        shipping_charge = request.POST.get("shipping_charge", 0)
+        final_total = request.POST.get("final_total", 0)
+
+        cart_items = CartItem.objects.filter(user=user)
+
+        if not cart_items.exists():
+            messages.error(request, "Your cart is empty.")
+            return redirect('cart')
+
+        order = Order.objects.create(
+            user=user,
+            fullname=fullname,
+            contact=contact,
+            address_line1=add1,
+            street=street,
+            city=city,
+            zipcode=zipcode,
+            country=country,
+            total_price=total_price,
+            shipping_charge=shipping_charge,
+            final_total=final_total
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                color=item.product.color,
+                quantity=item.quantity,
+                line_total=item.subtotal
+            )
+
+        cart_items.delete()
+
+        messages.success(request, "Your order has been placed successfully!")
+        return redirect('product_list')  # or wherever you want to send user after order
+
+    messages.error(request, "Invalid request method.")
+    return redirect('cart')
+
+@login_required
+def update_cart_quantity(request, item_id):
+    if request.method == "POST":
+        item = get_object_or_404(CartItem, id=item_id, user=request.user)
+        try:
+            new_qty = int(request.POST.get("quantity"))
+            if new_qty >= 1:
+                item.quantity = new_qty
+                item.save()
+        except ValueError:
+            pass  # handle invalid input gracefully
+    return redirect('cart')
+
+@csrf_exempt  # For AJAX CSRF; required with JS fetch()
+@login_required
+def update_cart_quantity_ajax(request, item_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            quantity = int(data.get("quantity"))
+            if quantity >= 1:
+                item = CartItem.objects.get(id=item_id, user=request.user)
+                item.quantity = quantity
+                item.save()
+                return JsonResponse({"status": "success"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+    return JsonResponse({"status": "invalid"})
