@@ -6,11 +6,9 @@
 <div class="booking-wrapper">
   <h2 class="mb-4 text-center">Place Your Mehndi Order</h2>
 
-  <!-- ADD action attribute to send form data to backend -->
   <form id="orderForm" action="{% url 'place_order' %}" method="POST">
     {% csrf_token %}
     <div class="row justify-content-center">
-
       <!-- LEFT SIDE: Customer & Shipping Info -->
       <div class="col-md-6">
         <div class="mb-3">
@@ -65,6 +63,7 @@
         </div>
         <hr>
 
+        <!-- Summary display -->
         <div id="summaryCharges" style="font-weight: 700; font-size: 1.2rem;">
           <div class="d-flex justify-content-between mb-2" style="font-size: 1.3rem; font-weight: 800; color: #d9534f;">
             <span>Total Price:</span>
@@ -81,22 +80,72 @@
         </div>
         <br>
 
+        <!-- Hidden fields for backend -->
+        <input type="hidden" name="total_price" id="total_price">
+        <input type="hidden" name="shipping_charge" id="shipping_charge" value="50">
+        <input type="hidden" name="final_total" id="final_total">
+
         <div class="d-flex gap-2 mb-3">
           <button type="submit" class="btn btn-warning flex-grow-1">📦 Place Order</button>
           <button type="reset" class="btn btn-secondary flex-grow-1" id="resetBtn">Cancel</button>
         </div>
       </div>
-
     </div>
   </form>
 </div>
 
 <script>
+
+    document.getElementById("orderForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            Swal.fire({
+                icon: "success",
+                title: "Order Placed!",
+                text: data.message,
+                confirmButtonColor: "#3085d6"
+            });
+
+            form.reset();
+            document.getElementById('productLinesContainer').innerHTML = '';
+            addProductLine();
+            updateGrandTotal();
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data.message,
+                confirmButtonColor: "#d33"
+            });
+        }
+    })
+    .catch(() => {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong! Please try again."
+        });
+    });
+});
+
   const shippingChargeAmount = 50;
   const container = document.getElementById('productLinesContainer');
   const grandTotalSummary = document.getElementById('grandTotalSummary');
   const shippingChargeSummary = document.getElementById('shippingChargeSummary');
   const finalTotalSummary = document.getElementById('finalTotalSummary');
+  const totalPriceInput = document.getElementById('total_price');
+  const shippingChargeInput = document.getElementById('shipping_charge');
+  const finalTotalInput = document.getElementById('final_total');
 
   const mehndiOptions = [
     { value: "Classic Brown", price: 100 },
@@ -212,21 +261,17 @@
       total += parseFloat(text.replace(/[₹,]/g, '')) || 0;
     });
 
+    const finalTotal = total + shippingChargeAmount;
+
     grandTotalSummary.textContent = `₹${total.toLocaleString('en-IN')}`;
     shippingChargeSummary.textContent = `₹${shippingChargeAmount.toLocaleString('en-IN')}`;
-    finalTotalSummary.textContent = `₹${(total + shippingChargeAmount).toLocaleString('en-IN')}`;
+    finalTotalSummary.textContent = `₹${finalTotal.toLocaleString('en-IN')}`;
+
+    // Update hidden inputs
+    totalPriceInput.value = total;
+    finalTotalInput.value = finalTotal;
+    shippingChargeInput.value = shippingChargeAmount;
   }
-     {% if messages %}
-    {% for message in messages %}
-      Swal.fire({
-        icon: 'success',
-        title: 'Order Placed!',
-        text: '{{ message }}',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'OK'
-      });
-    {% endfor %}
-  {% endif %}
 </script>
 
 {% endblock %}

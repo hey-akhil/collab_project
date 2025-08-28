@@ -32,6 +32,7 @@ class Profile(models.Model):
         return self.user.username
 
 class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     fullname = models.CharField(max_length=100)
     contact = models.CharField(max_length=15)
     address_line1 = models.CharField(max_length=255)
@@ -47,11 +48,15 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id} - {self.fullname}"
 
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     color = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     line_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Item for Order #{self.order.id} - {self.color}"
 
     def __str__(self):
         return f"{self.color} x {self.quantity}"
