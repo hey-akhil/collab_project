@@ -19,8 +19,8 @@
         <a href="{% url 'admin_dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">
           <i class="fas fa-home"></i> Home
         </a>
-        <a href="#" class="{% if request.path == '/customers/' %}active{% endif %}">
-          <i class="fas fa-user"></i> Users
+        <a href="{% url 'manage_user' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
+          <i class="fas fa-user"></i> Manage Users
         </a>
         <a href="{% url 'Appointment_booking_list' %}" class="{% if request.path == '/appointments/' %}active{% endif %}">
           <i class="fas fa-calendar-check"></i> Appointment
@@ -29,11 +29,14 @@
           <i class="fas fa-receipt"></i> Orders [Cone]
         </a>
 
-        <a href="#" class="{% if request.path == '/products/' %}active{% endif %}">
+        <a href="{% url 'manage_product' %}" class="{% if request.path == '/products/' %}active{% endif %}">
           <i class="fas fa-box"></i> Products
         </a>
-        <a href="#" class="{% if request.path == '/customers/' %}active{% endif %}">
+        <a href="{% url 'manage_gallery' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
           <i class="fa-solid fa-fan"></i> Manage Gallery
+        </a>
+        <a href="{% url 'logout' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
+          <i class="fa-solid fa-fan"></i> Logout
         </a>
       </nav>
       <div class="user-info">
