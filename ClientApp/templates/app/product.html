@@ -1,0 +1,34 @@
+{% extends 'static_pages/base.html' %}
+{% block start %}
+{% load static %}
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
+
+<body>
+  <h2 style="margin-top: 5rem;">🛍️ Explore Our Products</h2>
+  <p class="subtitle">
+    Discover beautifully crafted products with various sizes and colors at <strong>Deepak Mehndi Art</strong>.
+  </p>
+
+  <div class="services">
+    {% for product in products %}
+    <div class="service-card">
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+      <img src="{% static 'img/placeholder.png' %}" alt="No Image">
+      {% endif %}
+
+      <h3>{{ product.name }}</h3>
+      <p><strong>Color:</strong> {{ product.color }}</p>
+      <p><strong>Size:</strong> {{ product.size }}</p>
+      <p><strong>Price:</strong> ₹{{ product.price }}</p>
+      <p>{{ product.details|truncatechars:100 }}</p>
+
+      <a href="{% url 'add_to_cart' product.id %}" class="btn">ADD TO CART</a>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+{% endblock %}
