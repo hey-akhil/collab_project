@@ -5,12 +5,10 @@
     <a class="navbar-brand fw-bold" href="{% url 'home' %}">
       <img src="{% static 'img/logo.png' %}" alt="Logo" width="120" />
     </a>
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
@@ -34,13 +32,16 @@
           <li class="nav-item" >
           <a class="nav-link" href="{% url 'login' %}" >login</a>
         <li class="nav-item" >
+<<<<<<< HEAD
+=======
+          <a class="nav-link" href="{% url 'our_product' %}" >Our Products</a>
+        </li>
+        <li class="nav-item" >
+>>>>>>> 1b15fd8414e53aa7524cc664a0f00c2a431b3c79
           <a class="nav-link" href="{% url 'order' %}" >Cone Order</a>
         </li>
       </ul>
     </div>
-
     <button class="btn btn-quote" style="background-color: antiquewhite;">GET A QUOTE</button>
   </div>
 </nav>
-
-

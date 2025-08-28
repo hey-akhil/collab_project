@@ -1,0 +1,41 @@
+{% extends 'app/admin/admin.html' %}
+{% load static %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
+
+<body>
+  <h2 style="margin-top: 5rem;">🛠️ Manage Products</h2>
+  <p class="subtitle">
+    Add, edit, or remove products from your store inventory.
+  </p>
+
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <a href="{% url 'add_product' %}" class="btn" style="background-color: #007bff;">➕ Add New Product</a>
+  </div>
+
+  <div class="services">
+    {% for product in products %}
+    <div class="service-card">
+      {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+      <img src="{% static 'img/placeholder.png' %}" alt="No Image">
+      {% endif %}
+
+      <h3>{{ product.name }}</h3>
+      <p><strong>Color:</strong> {{ product.color }}</p>
+      <p><strong>Size:</strong> {{ product.size }}</p>
+      <p><strong>Price:</strong> ₹{{ product.price }}</p>
+      <p>{{ product.details|truncatechars:100 }}</p>
+
+      <div style="margin-top: 1rem;">
+        <a href="{% url 'edit_product' product.id %}" class="btn" style="background-color: #ffc107;">✏️ Edit</a>
+        <a href="{% url 'delete_product' product.id %}" class="btn" style="background-color: #dc3545;" onclick="return confirm('Are you sure you want to delete this product?');">🗑️ Delete</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+{% endblock %}

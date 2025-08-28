@@ -1,0 +1,115 @@
+{% extends 'app/admin/admin.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        color: black;
+    }
+
+    .order-details {
+        margin-top: 20px;
+    }
+
+    .order-details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .order-details-table td, .order-details-table th {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .order-details-table th {
+        background-color: #f2f2f2;
+        width: 200px;
+    }
+
+    .product-table {
+        margin-top: 30px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .product-table th, .product-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .product-table th {
+        background-color: #e6f7ff;
+    }
+
+    .back-link {
+        margin-top: 20px;
+        display: inline-block;
+    }
+</style>
+
+<h1>Order Details - #{{ order.id }}</h1>
+
+<div class="order-details">
+    <table class="order-details-table">
+        <tr>
+            <th>Full Name</th>
+            <td>{{ order.fullname }}</td>
+        </tr>
+        <tr>
+            <th>Contact</th>
+            <td>{{ order.contact }}</td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td>{{ order.address_line1 }}, {{ order.street }}, {{ order.city }} - {{ order.zipcode }}, {{ order.country }}</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td>₹{{ order.total_price }}</td>
+        </tr>
+        <tr>
+            <th>Shipping Charge</th>
+            <td>₹{{ order.shipping_charge }}</td>
+        </tr>
+        <tr>
+            <th>Final Total</th>
+            <td>₹{{ order.final_total }}</td>
+        </tr>
+        <tr>
+            <th>Created At</th>
+            <td>{{ order.created_at }}</td>
+        </tr>
+    </table>
+</div>
+
+<h2 class="mt-4">Products in this Order</h2>
+<table class="product-table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Color</th>
+            <th>Quantity</th>
+            <th>Line Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order_items %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.color }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.line_total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">No items found for this order.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a class="back-link btn btn-secondary mt-3" href="{% url 'order_list' %}">← Back to Orders</a>
+
+{% endblock %}

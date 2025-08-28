@@ -1,0 +1,13 @@
+{% extends 'static_pages/base.html' %}
+{% block start %}
+<h2 style="margin-top: 5rem;">{{ title }}</h2>
+
+<div style="max-width: 500px; margin: auto; padding: 2rem;">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="{% url 'manage_products' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}
