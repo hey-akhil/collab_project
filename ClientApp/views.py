@@ -231,6 +231,7 @@ def add_to_cart(request, product_id):
 
     if not created:
         # If already in cart, just increment quantity
+
         cart_item.quantity += 1
         cart_item.save()
 
@@ -289,3 +290,13 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
     return redirect('manage_products')
+
+@login_required
+def my_orders(request):
+    """Display all orders of the logged-in user."""
+    orders = Order.objects.filter(user=request.user).prefetch_related("items").order_by("-created_at")
+
+    return render(request, "app/my_orders.html", {
+        "orders": orders,
+        "user_profile": request.user,  # Optional: for user details on page
+    })
