@@ -1,40 +1,58 @@
-{% extends 'static_pages/base.html' %}
+{% extends 'app/admin/admin.html' %}
 {% load static %}
-{% block start %}
+
+{% block content %}
 <style>
-    body{
+    body {
         color: black;
     }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    table, th, td {
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
 </style>
+
 <h1>All Orders</h1>
-    <table border="1" cellpadding="5">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Full Name</th>
-                <th>Total Price</th>
-                <th>Final Total</th>
-                <th>Created At</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.fullname }}</td>
-                <td>{{ order.total_price }}</td>
-                <td>{{ order.final_total }}</td>
-                <td>{{ order.created_at }}</td>
-                <td>
-                    <a href="{% url 'order_detail' order.id %}">View</a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="6">No orders found.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Total Price</th>
+            <th>Final Total</th>
+            <th>Created At</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.fullname }}</td>
+            <td>{{ order.total_price }}</td>
+            <td>{{ order.final_total }}</td>
+            <td>{{ order.created_at }}</td>
+            <td>
+                <a href="{% url 'order_detail' order.id %}">View</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6">No orders found.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
