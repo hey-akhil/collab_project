@@ -1,20 +1,15 @@
 from django.contrib import admin
 from .models import Booking, Order, OrderItem, Review, Profile, Product, CartItem
+from .models import Booking,Order,OrderItem,CartItem,Product,Review,Profile
 
 # Register Booking model
 admin.site.register(Booking)
-
 # Register Review model
 admin.site.register(Review)
-
 # Register Profile model
 admin.site.register(Profile)
-
-# Register Product model
-admin.site.register(Product)
-
-# Register CartItem model
 admin.site.register(CartItem)
+admin.site.register(Product)
 
 # Inline for OrderItem in Order admin
 class OrderItemInline(admin.TabularInline):

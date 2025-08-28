@@ -1,8 +1,11 @@
+from time import timezone
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone as dj_timezone
 from .models import Booking
 from django.http import JsonResponse
 from .forms import RegisterForm, LoginForm
@@ -189,7 +192,9 @@ def manage_gallery(request):
     return render(request, 'app/admin/manage_gallery.html')
 
 def our_product(request):
-    return render(request, 'app/product.html')
+    # Fetch all products from the database
+    products = Product.objects.all()
+    return render(request, 'app/product.html', {'products': products})
 
 def manage_product(request):
     return render(request, 'app/admin/manage_product.html')
@@ -200,26 +205,32 @@ def manage_user(request):
 def cart(request):
     return render(request, 'app/cart.html')
 
-
+@login_required
 def cart_view(request):
+    """Display the user's cart items and total price."""
     cart_items = CartItem.objects.filter(user=request.user)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    print(f"User: {request.user}, Cart Count: {cart_items.count()}")  # Debug log
 
-    return render(request, 'cart.html', {
+    total_price = sum(item.subtotal for item in cart_items)
+
+    return render(request, 'app/cart.html', {
         'cart_items': cart_items,
         'total_price': total_price,
     })
 
-
 @login_required
 def add_to_cart(request, product_id):
+    """Add a product to the cart or update quantity if it already exists."""
     product = get_object_or_404(Product, id=product_id)
 
+    # Get or create a cart item for this user and product
     cart_item, created = CartItem.objects.get_or_create(
         user=request.user,
         product=product
     )
+
     if not created:
+        # If already in cart, just increment quantity
         cart_item.quantity += 1
         cart_item.save()
 

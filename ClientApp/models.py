@@ -75,12 +75,18 @@ class Product(models.Model):
         return f"{self.name} - {self.color} - {self.size}"
 
 class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart_items")
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)  # Automatically sets creation time
 
+    @property
     def subtotal(self):
         return self.product.price * self.quantity
 
     def __str__(self):
-        return f"{self.user} - {self.product.name}"
+        return f"{self.quantity} × {self.product.name} for {self.user.username}"
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ('user', 'product')
