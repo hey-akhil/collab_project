@@ -1,13 +1,84 @@
 {% extends 'static_pages/base.html' %}
+{% load static %}
 {% block start %}
-<h2 style="margin-top: 5rem;">{{ title }}</h2>
 
-<div style="max-width: 500px; margin: auto; padding: 2rem;">
+<!-- Google Font & Optional Custom CSS -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f9f9f9;
+  }
+
+  .product-form-wrapper {
+    max-width: 600px;
+    margin: 5rem auto;
+    background-color: #fff;
+    padding: 2.5rem 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    color: #000; /* Ensure text color is black */
+  }
+
+  /* Force all child elements to black text */
+  .product-form-wrapper,
+  .product-form-wrapper * {
+    color: #000 !important;
+  }
+
+  .product-form-wrapper h2 {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .product-form-wrapper form p {
+    margin-bottom: 1.2rem;
+  }
+
+  .product-form-wrapper label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .product-form-wrapper input,
+  .product-form-wrapper select,
+  .product-form-wrapper textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #000; /* input text color */
+    background-color: #fff;
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+
+  .form-buttons .btn {
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+</style>
+
+<div class="product-form-wrapper">
+  <h2>{{ title }}</h2>
+
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Save</button>
-    <a href="{% url 'manage_products' %}" class="btn btn-secondary">Cancel</a>
+
+    <div class="form-buttons">
+      <button type="submit" class="btn btn-success">💾 Save</button>
+      <a href="{% url 'manage_products' %}" class="btn btn-secondary">↩️ Cancel</a>
+    </div>
   </form>
 </div>
+
 {% endblock %}

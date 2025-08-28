@@ -34,8 +34,17 @@ def about(request):
 def cone_order(request):
     return render(request, "app/cone_order.html")
 
-def profile(request):
-    return render(request, "app/profile.html")
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        user = request.user
+        user.username = new_username
+        user.email = new_email
+        user.save()
+        return redirect('profile')
+    return render(request, 'app/profile.html')
 
 def book_appointment(request):
     success = False
