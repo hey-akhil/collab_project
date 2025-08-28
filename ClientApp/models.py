@@ -32,6 +32,7 @@ class Profile(models.Model):
         return self.user.username
 
 class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     fullname = models.CharField(max_length=100)
     contact = models.CharField(max_length=15)
     address_line1 = models.CharField(max_length=255)
