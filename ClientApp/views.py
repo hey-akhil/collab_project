@@ -1,8 +1,11 @@
+from time import timezone
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone as dj_timezone
 from .models import Booking
 from .forms import RegisterForm, LoginForm
 from .models import Booking,Review,OrderItem,Order
@@ -12,6 +15,12 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from decimal import Decimal
 from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import CartItem, Product
+from .forms import ProductForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 def home(request):
     return render(request, 'app/home.html')
@@ -183,3 +192,105 @@ def delete_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     booking.delete()
     return redirect(reverse('Appointment_booking_list'))
+
+def manage_gallery(request):
+    return render(request, 'app/admin/manage_gallery.html')
+
+def our_product(request):
+    # Fetch all products from the database
+    products = Product.objects.all()
+    return render(request, 'app/product.html', {'products': products})
+
+def manage_product(request):
+    return render(request, 'app/admin/manage_product.html')
+
+def manage_user(request):
+    return render(request, 'app/admin/user_manage.html')
+
+def cart(request):
+    return render(request, 'app/cart.html')
+
+@login_required
+def cart_view(request):
+    """Display the user's cart items and total price."""
+    cart_items = CartItem.objects.filter(user=request.user)
+    print(f"User: {request.user}, Cart Count: {cart_items.count()}")  # Debug log
+
+    total_price = sum(item.subtotal for item in cart_items)
+
+    return render(request, 'app/cart.html', {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    })
+
+@login_required
+def add_to_cart(request, product_id):
+    """Add a product to the cart or update quantity if it already exists."""
+    product = get_object_or_404(Product, id=product_id)
+
+    # Get or create a cart item for this user and product
+    cart_item, created = CartItem.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+
+    if not created:
+        # If already in cart, just increment quantity
+        cart_item.quantity += 1
+        cart_item.save()
+
+    return redirect('cart')
+
+@login_required
+def remove_from_cart(request, item_id):
+    item = get_object_or_404(CartItem, id=item_id, user=request.user)
+    item.delete()
+    return redirect('cart')
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+def is_staff(user):
+    return user.is_staff
+
+@login_required
+@user_passes_test(is_staff)
+def manage_products(request):
+    products = Product.objects.all()
+    return render(request, 'app/admin/manage_product.html', {'products': products})
+
+
+@login_required
+@user_passes_test(is_staff)
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_products')
+    else:
+        form = ProductForm()
+    return render(request, 'app/admin/product_form.html', {'form': form, 'title': 'Add Product'})
+
+
+@login_required
+@user_passes_test(is_staff)
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_products')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'app/admin/product_form.html', {'form': form, 'title': 'Edit Product'})
+
+
+@login_required
+@user_passes_test(is_staff)
+def delete_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product.delete()
+    return redirect('manage_products')
