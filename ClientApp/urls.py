@@ -14,8 +14,10 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path("order/", views.cone_order, name="order"),
-path("place-order/", views.place_order, name="place_order"),
+    path("place-order/", views.place_order, name="place_order"),
     path("my-profile/", views.profile, name="profile"),
     path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('orders/', views.order_list, name='order_list'),
+    path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
 
 ]

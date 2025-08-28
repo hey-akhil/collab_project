@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from decimal import Decimal
+from django.shortcuts import render, get_object_or_404
 
 def home(request):
     return render(request, 'app/home.html')
@@ -161,3 +162,13 @@ def get_price_for_color(color):
         "Reddish Maroon": Decimal(150),
     }
     return prices.get(color, Decimal(0))
+
+# View to show all orders
+def order_list(request):
+    orders = Order.objects.all().order_by('-created_at')
+    return render(request, 'app/admin/order_list.html', {'orders': orders})
+
+# View to show single order details
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'app/admin/order_detail.html', {'order': order})
