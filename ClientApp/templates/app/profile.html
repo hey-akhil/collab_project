@@ -9,45 +9,55 @@
   body {
     font-family: 'Poppins', sans-serif;
     background: #fffaf4;
+    color: #333;
   }
 
-  .profile-wrapper {
+  .profile-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 50px 20px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 5rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .profile-left, .profile-right {
+    flex: 1;
+    min-width: 300px;
+    margin: 10px;
   }
 
   .profile-card {
-    background: #fff;
-    padding: 40px 35px;
-    border-radius: 15px;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-    width: 420px;
     text-align: center;
+    padding: 30px 20px;
   }
 
   .profile-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
+    font-size: 70px;
+    margin-bottom: 15px;
   }
 
   .profile-card h2 {
     margin-bottom: 10px;
     font-weight: 600;
-    font-size: 26px;
-    color: #333;
+    font-size: 24px;
   }
 
   .profile-card p {
     margin-bottom: 8px;
     color: #555;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .profile-actions {
-    margin-top: 25px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .btn-primary {
@@ -58,26 +68,187 @@
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 15px;
-    transition: background 0.3s ease-in-out;
     text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s ease-in-out;
   }
 
   .btn-primary:hover {
     background: #e68a00;
   }
+
+  .orders-section {
+    padding: 20px;
+  }
+
+  .orders-section h4 {
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .order-card {
+    background-color: #fef7f1;
+    border-left: 4px solid #f4a261;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+
+  .order-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #444;
+  }
+
+  hr {
+    margin: 30px 0;
+    border-top: 1px solid #ddd;
+  }
+
+  .profile-links a {
+    display: block;
+    margin: 8px 0;
+    color: #333;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .profile-links a:hover {
+    color: #f4a261;
+    text-decoration: underline;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    padding-top: 100px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 400px;
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .close {
+    color: #aaa;
+    position: absolute;
+    top: 10px; right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover { color: #000; }
+
+  .modal-content label {
+    font-weight: 600;
+    margin-top: 10px;
+    display: block;
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .modal-content .btn {
+    margin-top: 10px;
+  }
 </style>
 
-<div class="profile-wrapper">
-  <div class="profile-card">
-    <div class="profile-icon">👩‍🎨</div> <!-- You can change emoji -->
-    <h2>{{ user.username }}</h2>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+<div class="profile-container">
+  <!-- Left Column -->
+  <div class="profile-left">
+    <div class="profile-card">
+      <div class="profile-icon">👩‍🎨</div>
+      <h2>{{ user.username }}</h2>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
 
-    <div class="profile-actions">
-      <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+      <div class="profile-actions">
+        <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+        <button class="btn-primary" onclick="openModal()">Edit Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="profile-right">
+    <div class="orders-section">
+      <h4>🧾 Recent Orders</h4>
+      {% if recent_orders %}
+        {% for order in recent_orders %}
+          <div class="order-card">
+            <p><strong>Order #{{ order.id }}</strong></p>
+            <p>Total: ₹{{ order.final_total }}</p>
+            <p>Date: {{ order.created_at|date:"F j, Y" }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No recent orders found.</p>
+      {% endif %}
+    </div>
+
+    <hr>
+
+    <div class="profile-links">
+      <a href="{% url 'cart' %}">❤️ Cart</a>
+      <a href="#">📦 View All Orders</a>
+      <a href="#">🎫 Track Ticket</a>
+      <a href="#">🚚 Track Order</a>
     </div>
   </div>
 </div>
+
+<!-- Edit Profile Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h4 style="margin-bottom: 1rem;">✏️ Edit Profile</h4>
+    <form method="post" action="{% url 'edit_profile' %}">
+      {% csrf_token %}
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" value="{{ user.username }}" required>
+
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" value="{{ user.email }}" required>
+
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('editModal').style.display = 'block';
+  }
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  // Optional: Close modal if user clicks outside the form
+  window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
 
 {% endblock %}
