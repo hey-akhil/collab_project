@@ -34,4 +34,8 @@ urlpatterns = [
     path('manage-products/add/', views.add_product, name='add_product'),
     path('manage-products/edit/<int:product_id>/', views.edit_product, name='edit_product'),
     path('manage-products/delete/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('checkout/', views.checkout_view, name='checkout'),
+    path('place-order/', views.place_order, name='place_order'),
+    path('cart/update/<int:item_id>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('cart/update-ajax/<int:item_id>/', views.update_cart_quantity_ajax, name='update_cart_quantity_ajax'),
 ]
