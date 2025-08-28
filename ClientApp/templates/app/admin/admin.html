@@ -81,7 +81,7 @@
         <a href="{% url 'Appointment_booking_list' %}" class="{% if request.path == '/appointments/' %}active{% endif %}">
           <i class="fas fa-calendar-check"></i> Appointment
         </a>
-        <a href="#" class="{% if request.path == '/orders/' %}active{% endif %}">
+        <a href="{% url 'order_list' %}" class="{% if request.path == '/orders/' %}active{% endif %}">
           <i class="fas fa-receipt"></i> Orders
         </a>
         <a href="#" class="{% if request.path == '/products/' %}active{% endif %}">

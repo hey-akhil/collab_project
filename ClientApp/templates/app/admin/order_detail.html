@@ -1,0 +1,19 @@
+{% extends 'static_pages/base.html' %}
+{% load static %}
+{% block start %}
+<style>
+    color: black;
+</style>
+<h1>Order Details - #{{ order.id }}</h1>
+
+    <p><strong>Full Name:</strong> {{ order.fullname }}</p>
+    <p><strong>Contact:</strong> {{ order.contact }}</p>
+    <p><strong>Address:</strong> {{ order.address_line1 }}, {{ order.street }}, {{ order.city }} - {{ order.zipcode }}, {{ order.country }}</p>
+    <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+    <p><strong>Shipping Charge:</strong> ₹{{ order.shipping_charge }}</p>
+    <p><strong>Final Total:</strong> ₹{{ order.final_total }}</p>
+    <p><strong>Created At:</strong> {{ order.created_at }}</p>
+
+    <a href="{% url 'order_list' %}">Back to Orders</a>
+
+{% endblock %}
