@@ -6,29 +6,37 @@
 <link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
 
 <body>
-  <h2 style="margin-top: 5rem;">🛍️ Explore Our Products</h2>
-  <p class="subtitle">
-    Discover beautifully crafted products with various sizes and colors at <strong>Deepak Mehndi Art</strong>.
-  </p>
+  <div class="container" style="margin-top: 5rem; text-align: center;">
+    <h2 class="fw-bold">🛍️ Explore Our Products</h2>
+    <p class="subtitle mb-5">
+      Discover beautifully crafted products in various sizes and colors at
+      <strong>Deepak Mehndi Art</strong>.
+    </p>
 
-  <div class="services">
-    {% for product in products %}
-    <div class="service-card">
-      {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.name }}">
-      {% else %}
-      <img src="{% static 'img/placeholder.png' %}" alt="No Image">
-      {% endif %}
+    <div class="services">
+      {% for product in products %}
+      <div class="service-card shadow-sm">
+        <!-- Product Image -->
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+        <img src="{% static 'img/placeholder.png' %}" alt="No Image">
+        {% endif %}
 
-      <h3>{{ product.name }}</h3>
-      <p><strong>Color:</strong> {{ product.color }}</p>
-      <p><strong>Size:</strong> {{ product.size }}</p>
-      <p><strong>Price:</strong> ₹{{ product.price }}</p>
-      <p>{{ product.details|truncatechars:100 }}</p>
+        <!-- Product Info -->
+        <h3 class="mt-2">{{ product.name }}</h3>
+        <p><strong>Color:</strong> {{ product.color }}</p>
+        <p><strong>Size:</strong> {{ product.size }}</p>
+        <p><strong>Price:</strong> ₹{{ product.price }}</p>
+        <p>{{ product.details|truncatechars:80 }}</p>
 
-      <a href="{% url 'add_to_cart' product.id %}" class="btn">ADD TO CART</a>
+        <!-- Add to Cart Button -->
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark mt-2">ADD TO CART</a>
+      </div>
+      {% empty %}
+      <p class="text-muted">No products available right now. Please check back later.</p>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
 </body>
 {% endblock %}

@@ -1,9 +1,13 @@
+from time import timezone
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone as dj_timezone
 from .models import Booking
+from django.http import JsonResponse
 from .forms import RegisterForm, LoginForm
 from .models import Booking,Review,OrderItem,Order
 from django.utils.dateparse import parse_datetime
@@ -115,57 +119,46 @@ def logout_user(request):
 
 def place_order(request):
     if request.method == "POST":
-        fullname = request.POST.get("fullname")
-        contact = request.POST.get("contact")
-        add1 = request.POST.get("add1")
-        street = request.POST.get("street")
-        city = request.POST.get("city")
-        zipcode = request.POST.get("zipcode")
-        country = request.POST.get("county", "India")
+        fullname = request.POST.get('fullname')
+        contact = request.POST.get('contact')
+        address_line1 = request.POST.get('add1')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        zipcode = request.POST.get('zipcode')
+        country = request.POST.get('county', 'India')
+        total_price = Decimal(request.POST.get('total_price', '0'))
+        shipping_charge = Decimal(request.POST.get('shipping_charge', '50'))
+        final_total = Decimal(request.POST.get('final_total', '0'))
 
-        colors = request.POST.getlist("color[]")
-        quantities = request.POST.getlist("qty[]")
-
-        shipping_charge = Decimal(50)
-        total_price = Decimal(0)
-
-        for i, color in enumerate(colors):
-            price = get_price_for_color(color)
-            qty = int(quantities[i])
-            total_price += price * qty
-
-        final_total = total_price + shipping_charge
-
+        # Save order
         order = Order.objects.create(
+            user=request.user,
             fullname=fullname,
             contact=contact,
-            address_line1=add1,
+            address_line1=address_line1,
             street=street,
             city=city,
             zipcode=zipcode,
             country=country,
             total_price=total_price,
             shipping_charge=shipping_charge,
-            final_total=final_total,
+            final_total=final_total
         )
 
-        for i, color in enumerate(colors):
-            price = get_price_for_color(color)
-            qty = int(quantities[i])
-            OrderItem.objects.create(
-                order=order,
-                color=color,
-                quantity=qty,
-                line_total=price * qty
-            )
+        # Save order items
+        colors = request.POST.getlist('color[]')
+        qtys = request.POST.getlist('qty[]')
+        for color, qty in zip(colors, qtys):
+            price_per_item = 100 if color == "Classic Brown" else 120 if color == "Bold Black" else 150
+            line_total = Decimal(price_per_item) * Decimal(qty)
+            OrderItem.objects.create(order=order, color=color, quantity=qty, line_total=line_total)
 
-        # Set success message
-        messages.success(request, f"Your order (ID: {order.id}) has been placed successfully!")
+        return JsonResponse({
+            "status": "success",
+            "message": "Your order has been placed successfully!"
+        })
 
-        return redirect('order')  # back to the form page
-
-    # if GET request, fallback
-    return redirect('order')
+    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
 
 def admin_dashboard(request):
     return render(request, 'app/admin/admin_dashboard.html')
@@ -187,7 +180,12 @@ def order_list(request):
 # View to show single order details
 def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    return render(request, 'app/admin/order_detail.html', {'order': order})
+    order_items = order.items.all()  # fetch related OrderItems
+    return render(request, 'app/admin/order_detail.html', {
+        'order': order,
+        'order_items': order_items
+    })
+
 from django.shortcuts import get_object_or_404, redirect
 
 def appointment_booking_list(request):
@@ -203,7 +201,9 @@ def manage_gallery(request):
     return render(request, 'app/admin/manage_gallery.html')
 
 def our_product(request):
-    return render(request, 'app/product.html')
+    # Fetch all products from the database
+    products = Product.objects.all()
+    return render(request, 'app/product.html', {'products': products})
 
 def manage_product(request):
     return render(request, 'app/admin/manage_product.html')
@@ -214,26 +214,32 @@ def manage_user(request):
 def cart(request):
     return render(request, 'app/cart.html')
 
-
+@login_required
 def cart_view(request):
+    """Display the user's cart items and total price."""
     cart_items = CartItem.objects.filter(user=request.user)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    print(f"User: {request.user}, Cart Count: {cart_items.count()}")  # Debug log
 
-    return render(request, 'cart.html', {
+    total_price = sum(item.subtotal for item in cart_items)
+
+    return render(request, 'app/cart.html', {
         'cart_items': cart_items,
         'total_price': total_price,
     })
 
-
 @login_required
 def add_to_cart(request, product_id):
+    """Add a product to the cart or update quantity if it already exists."""
     product = get_object_or_404(Product, id=product_id)
 
+    # Get or create a cart item for this user and product
     cart_item, created = CartItem.objects.get_or_create(
         user=request.user,
         product=product
     )
+
     if not created:
+        # If already in cart, just increment quantity
         cart_item.quantity += 1
         cart_item.save()
 
