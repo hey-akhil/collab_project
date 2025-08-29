@@ -10,10 +10,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
-
 from .models import *
 from .forms import RegisterForm, LoginForm, ProductForm
-
 
 def home(request):
     return render(request, 'app/home.html')
@@ -59,7 +57,6 @@ def book_appointment(request):
             print("Booking Error:", e)  # Debugging log
 
     return render(request, "app/book_appointment.html", {"success": success})
-
 
 def adminviewpage(req):
     context = {}
