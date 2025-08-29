@@ -386,3 +386,13 @@ def update_cart_quantity_ajax(request, item_id):
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "invalid"})
+
+
+def myOrders(request):
+    return render(request, 'app/my_orders.html')
+
+def saveAddress(request):
+    return render(request, 'app/save_address.html')
+
+
+

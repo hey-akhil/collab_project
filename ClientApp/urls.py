@@ -38,4 +38,8 @@ urlpatterns = [
     path('place-order/', views.place_order, name='place_order'),
     path('cart/update/<int:item_id>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('cart/update-ajax/<int:item_id>/', views.update_cart_quantity_ajax, name='update_cart_quantity_ajax'),
+    path('my-orders/', views.myOrders, name='myOrders'),
+    path('save-address/', views.saveAddress, name='saveAddress'),
+
+
 ]

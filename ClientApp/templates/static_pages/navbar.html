@@ -32,15 +32,6 @@
           <a class="nav-link" href="{% url 'booking' %}">Book Your Appointment</a>
         </li>
 
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-        </li>
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="{% url 'order' %}">Cone Order</a>-->
-<!--        </li>-->
-        {% endif %}
-
         <li class="nav-item">
           <a class="nav-link" href="{% url 'our_product' %}">Our Products</a>
         </li>
@@ -48,6 +39,14 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin Panel</a>
         </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+        </li>
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="{% url 'order' %}">Cone Order</a>-->
+<!--        </li>-->
         {% endif %}
 
         {% if user.is_authenticated %}
