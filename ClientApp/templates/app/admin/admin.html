@@ -30,13 +30,13 @@
         </a>
 
         <a href="{% url 'manage_product' %}" class="{% if request.path == '/products/' %}active{% endif %}">
-          <i class="fas fa-box"></i> Products
+          <i class="fas fa-box"></i> Manage Products
         </a>
         <a href="{% url 'manage_gallery' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
           <i class="fa-solid fa-fan"></i> Manage Gallery
         </a>
         <a href="{% url 'logout' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
-          <i class="fa-solid fa-fan"></i> Logout
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
         </a>
       </nav>
       <div class="user-info">

@@ -1,11 +1,10 @@
 {% extends 'static_pages/base.html' %}
 {% load static %}
 {% block start %}
-<div class="cart-container" style="max-width: 1000px; margin: auto; padding: 30px;">
+<div class="cart-container" style="max-width: 1000px; margin: auto; padding: 30px; color: black;">
     <h1>Your Cart</h1>
-
     {% if cart_items %}
-        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
+        <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;" id="cartTable">
             <thead>
                 <tr style="background: #f5f5f5;">
                     <th style="border: 1px solid #ddd; padding: 10px;">Product</th>
@@ -18,22 +17,25 @@
             </thead>
             <tbody>
                 {% for item in cart_items %}
-                <tr>
+                <tr data-id="{{ item.id }}" data-price="{{ item.product.price }}">
                     <td style="border: 1px solid #ddd; padding: 10px;">
                         <strong>{{ item.product.name }}</strong><br>
                         <small>{{ item.product.color }} | Size: {{ item.product.size }}</small>
                     </td>
-                    <td style="border: 1px solid #ddd; padding: 10px;">{{ item.quantity }}</td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <button class="btn btn-sm btn-outline-secondary qty-btn" data-action="decrease">−</button>
+                            <span class="qty-value">{{ item.quantity }}</span>
+                            <button class="btn btn-sm btn-outline-secondary qty-btn" data-action="increase">+</button>
+                        </div>
+                    </td>
                     <td style="border: 1px solid #ddd; padding: 10px;">₹{{ item.product.price }}</td>
-                    <td style="border: 1px solid #ddd; padding: 10px;">₹{{ item.subtotal }}</td>
+                    <td class="item-subtotal" style="border: 1px solid #ddd; padding: 10px;">₹{{ item.subtotal }}</td>
                     <td style="border: 1px solid #ddd; padding: 10px;">
                         {{ item.created_at|date:"M d, Y H:i" }}
                     </td>
                     <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-                        <a href="{% url 'remove_from_cart' item.id %}"
-                           class="btn btn-danger btn-sm">
-                            Remove
-                        </a>
+                        <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -41,13 +43,61 @@
         </table>
 
         <div style="text-align: right; margin-top: 20px;">
-            <h4>Total: ₹{{ total_price }}</h4>
-            <a href="#" class="btn btn-primary">Proceed to Checkout</a>
+            <h4>Total: ₹<span id="cartTotal">{{ total_price }}</span></h4>
+            <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
             <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
         </div>
-
     {% else %}
         <p>Your cart is empty. <a href="{% url 'product_list' %}">Shop now</a></p>
     {% endif %}
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cartTable = document.getElementById('cartTable');
+
+    cartTable.querySelectorAll('.qty-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const row = this.closest('tr');
+            const qtySpan = row.querySelector('.qty-value');
+            const price = parseFloat(row.dataset.price);
+            const subtotalCell = row.querySelector('.item-subtotal');
+            const action = this.dataset.action;
+            const cartItemId = row.dataset.id;
+
+            let qty = parseInt(qtySpan.textContent);
+            if (action === 'increase') qty++;
+            else if (action === 'decrease' && qty > 1) qty--;
+
+            // Update DOM instantly
+            qtySpan.textContent = qty;
+            const newSubtotal = qty * price;
+            subtotalCell.textContent = `₹${newSubtotal.toFixed(2)}`;
+
+            updateCartTotal();
+
+            // Send Ajax call to backend to update quantity
+            fetch(`/cart/update-ajax/${cartItemId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ quantity: qty })
+            }).then(res => {
+                if (!res.ok) console.error("Failed to update cart on server.");
+            }).catch(err => console.error(err));
+        });
+    });
+
+    function updateCartTotal() {
+        let total = 0;
+        cartTable.querySelectorAll('tr[data-id]').forEach(row => {
+            const price = parseFloat(row.dataset.price);
+            const qty = parseInt(row.querySelector('.qty-value').textContent);
+            total += price * qty;
+        });
+        document.getElementById('cartTotal').textContent = total.toFixed(2);
+    }
+});
+</script>
 {% endblock %}

@@ -4,80 +4,85 @@
 
 <title>Profile - Mehendi Artist</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 
-<style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #fffaf4;
-  }
+<div class="profile-container">
+  <!-- Left Column -->
+  <div class="profile-left">
+    <div class="profile-card">
+      <div class="profile-icon">👩‍🎨</div>
+      <h2>{{ user.username }}</h2>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
 
-  .profile-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 50px 20px;
-  }
+      <div class="profile-actions">
+        <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+        <button class="btn-primary" onclick="openModal()">Edit Profile</button>
+      </div>
+    </div>
+  </div>
 
-  .profile-card {
-    background: #fff;
-    padding: 40px 35px;
-    border-radius: 15px;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-    width: 420px;
-    text-align: center;
-  }
+  <!-- Right Column -->
+  <div class="profile-right">
+    <div class="orders-section">
+      <h4>🧾 Recent Orders</h4>
+      {% if recent_orders %}
+        {% for order in recent_orders %}
+          <div class="order-card">
+            <p><strong>Order #{{ order.id }}</strong></p>
+            <p>Total: ₹{{ order.final_total }}</p>
+            <p>Date: {{ order.created_at|date:"F j, Y" }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No recent orders found.</p>
+      {% endif %}
+    </div>
 
-  .profile-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
-  }
+    <hr>
 
-  .profile-card h2 {
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 26px;
-    color: #333;
-  }
-
-  .profile-card p {
-    margin-bottom: 8px;
-    color: #555;
-    font-size: 16px;
-  }
-
-  .profile-actions {
-    margin-top: 25px;
-  }
-
-  .btn-primary {
-    background: #f4a261;
-    border: none;
-    color: white;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 15px;
-    transition: background 0.3s ease-in-out;
-    text-decoration: none;
-  }
-
-  .btn-primary:hover {
-    background: #e68a00;
-  }
-</style>
-
-<div class="profile-wrapper">
-  <div class="profile-card">
-    <div class="profile-icon">👩‍🎨</div> <!-- You can change emoji -->
-    <h2>{{ user.username }}</h2>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
-
-    <div class="profile-actions">
-      <a href="{% url 'logout' %}" class="btn-primary">Logout</a>
+    <div class="profile-links">
+      <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart"></i> &nbsp; Cart</a>
+      <a href="{% url 'myOrders' %}"><i class="fas fa-box-open"></i> &nbsp; My Orders</a>
+      <a href="#"><i class="fas fa-ticket-alt"></i> &nbsp; Raise Ticket</a>
+      <a href="{% url 'manage_addresses' %}"><i class="fas fa-map-marker-alt"></i>  &nbsp; Save Address</a>
     </div>
   </div>
 </div>
+
+<!-- Edit Profile Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h4 style="margin-bottom: 1rem;">✏️ Edit Profile</h4>
+    <form method="post" action="{% url 'edit_profile' %}">
+      {% csrf_token %}
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username" value="{{ user.username }}" required>
+
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" value="{{ user.email }}" required>
+
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openModal() {
+    document.getElementById('editModal').style.display = 'block';
+  }
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  // Optional: Close modal if user clicks outside the form
+  window.onclick = function(event) {
+    const modal = document.getElementById('editModal');
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
 
 {% endblock %}
