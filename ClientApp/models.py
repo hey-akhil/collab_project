@@ -90,3 +90,16 @@ class CartItem(models.Model):
     class Meta:
         ordering = ['-created_at']
         unique_together = ('user', 'product')
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
+    full_name = models.CharField(max_length=100)
+    contact = models.CharField(max_length=15)
+    address_line1 = models.CharField(max_length=255)
+    street = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=10)
+    country = models.CharField(max_length=100, default="India")
+
+    def __str__(self):
+        return f"{self.full_name} - {self.city}, {self.country}"
