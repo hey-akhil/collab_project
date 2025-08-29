@@ -1,0 +1,143 @@
+{% extends 'static_pages/base.html' %}
+{% load static %}
+{% block start %}
+<div class="container mt-4">
+  <div class="card shadow-sm rounded-3 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="m-0">My Addresses</h4>
+      {% if not address %}
+        <button id="newAddressBtn" class="btn btn-sm btn-primary rounded-3">+ Add New Address</button>
+      {% endif %}
+    </div>
+    <!-- Address List -->
+    <div id="addressList">
+      {% for addr in addresses %}
+        <div class="border rounded-3 p-3 mb-2 d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ addr.full_name }}</strong> <br>
+            {{ addr.address_line1 }}, {{ addr.street }}<br>
+            {{ addr.city }} - {{ addr.zipcode }}, {{ addr.country }}<br>
+            <small>📞 {{ addr.contact }}</small>
+          </div>
+          <div>
+            <a href="{% url 'edit_address' addr.id %}" class="btn btn-sm btn-warning">Edit</a>
+           <a href="#"
+               class="btn btn-sm btn-danger delete-btn"
+               data-url="{% url 'delete_address' addr.id %}">
+               Delete
+            </a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted text-center">No saved addresses yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Hidden New Address Form -->
+    <div id="newAddressForm" class="mt-4 card shadow-sm p-4 {% if address %}{% else %}d-none{% endif %}">
+  <h4 class="mb-3 text-primary">
+    {% if address %}<i class="bi bi-pencil-square"></i> Edit Address{% else %}<i class="bi bi-plus-circle"></i> Add New Address{% endif %}
+  </h4>
+
+  <form method="POST" action="{% if address %}{% url 'edit_address' address.id %}{% else %}{% url 'manage_addresses' %}{% endif %}">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Full Name</label>
+      <input type="text" name="full_name" class="form-control rounded-3" value="{{ address.full_name|default:'' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Contact</label>
+      <input type="text" name="contact" class="form-control rounded-3" value="{{ address.contact|default:'' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Address Line 1</label>
+      <input type="text" name="address_line1" class="form-control rounded-3" value="{{ address.address_line1|default:'' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Street</label>
+      <input type="text" name="street" class="form-control rounded-3" value="{{ address.street|default:'' }}">
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label fw-semibold">City</label>
+        <input type="text" name="city" class="form-control rounded-3" value="{{ address.city|default:'' }}" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label fw-semibold">Zip Code</label>
+        <input type="text" name="zipcode" class="form-control rounded-3" value="{{ address.zipcode|default:'' }}" required>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Country</label>
+      <input type="text" name="country" class="form-control rounded-3" value="{{ address.country|default:'India' }}" required>
+    </div>
+
+    <div class="d-flex justify-content-between mt-3">
+      <button type="submit" class="btn btn-primary rounded-3 px-4">
+        {% if address %}Update Address{% else %}Save Address{% endif %}
+      </button>
+
+      {% if address or not new_form_hidden %}
+<a href="{% url 'manage_addresses' %}" class="btn btn-outline-secondary rounded-3 px-4">Cancel</a>
+{% endif %}
+    </div>
+  </form>
+</div>
+
+      {% if messages %}
+          <div class="mt-2">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+      {% endif %}
+
+
+<script>
+   const newAddressBtn = document.getElementById('newAddressBtn');
+  const newAddressForm = document.getElementById('newAddressForm');
+
+  if (newAddressBtn) {
+    newAddressBtn.addEventListener('click', () => {
+      // Always reset form fields if adding new address (not editing)
+      if (!newAddressForm.classList.contains('d-none')) {
+        // If form already visible (edit mode), redirect to add mode
+        window.location.href = "{% url 'manage_addresses' %}";
+      } else {
+        newAddressForm.classList.remove('d-none');
+        newAddressBtn.classList.add('d-none');
+      }
+    });
+  }
+     document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+      const deleteUrl = this.getAttribute('data-url');
+
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "This address will be permanently deleted.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to delete URL
+          window.location.href = deleteUrl;
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

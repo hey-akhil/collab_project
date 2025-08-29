@@ -39,4 +39,9 @@ urlpatterns = [
     path('place-order/', views.place_order, name='place_order'),
     path('cart/update/<int:item_id>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('cart/update-ajax/<int:item_id>/', views.update_cart_quantity_ajax, name='update_cart_quantity_ajax'),
+    path('my-orders/', views.myOrders, name='myOrders'),
+    path('addresses/', views.manage_addresses, name='manage_addresses'),
+    path('addresses/edit/<int:pk>/', views.manage_addresses, name='edit_address'),
+    path('addresses/save/', views.save_address, name='save_address'),
+    path('addresses/delete/<int:id>/', views.delete_address, name='delete_address'),  # Add edit logic later
 ]
