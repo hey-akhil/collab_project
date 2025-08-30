@@ -10,10 +10,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
-
 from .models import *
 from .forms import RegisterForm, LoginForm, ProductForm
-
+from django.core.exceptions import PermissionDenied
 
 def home(request):
     return render(request, 'app/home.html')
@@ -28,7 +27,7 @@ def about(request):
     return render(request, "app/about_us.html")
 
 def cone_order(request):
-    return render(request, "app/cone_order.html")
+    return render(request, "app/order_checkout_main_page.html")
 
 @login_required
 def profile_view(request):
@@ -59,7 +58,6 @@ def book_appointment(request):
             print("Booking Error:", e)  # Debugging log
 
     return render(request, "app/book_appointment.html", {"success": success})
-
 
 def adminviewpage(req):
     context = {}
@@ -197,8 +195,6 @@ def our_product(request):
     products = Product.objects.all()
     return render(request, 'app/product.html', {'products': products})
 
-def manage_product(request):
-    return render(request, 'app/admin/manage_product.html')
 
 def manage_user(request):
     return render(request, 'app/admin/user_manage.html')
@@ -232,6 +228,7 @@ def add_to_cart(request, product_id):
 
     if not created:
         # If already in cart, just increment quantity
+
         cart_item.quantity += 1
         cart_item.save()
 
@@ -291,57 +288,97 @@ def delete_product(request, product_id):
     product.delete()
     return redirect('manage_products')
 
+@login_required
+def my_orders(request):
+    """Display all orders of the logged-in user."""
+    orders = Order.objects.filter(user=request.user).prefetch_related("items").order_by("-created_at")
+
+    return render(request, "app/my_orders.html", {
+        "orders": orders,
+        "user_profile": request.user,  # Optional: for user details on page
+    })
+
 
 @login_required
 def checkout_view(request):
+    # Get all cart items for the logged-in user
     cart_items = CartItem.objects.filter(user=request.user)
     total_price = sum(item.subtotal for item in cart_items)
     shipping_charge = 50
     final_total = total_price + shipping_charge
 
-    return render(request, 'app/cone_order.html', {
+    # Fetch all saved addresses of the user
+    addresses = Address.objects.filter(user=request.user)
+
+    return render(request, 'app/order_checkout_main_page.html', {
         'cart_items': cart_items,
         'total_price': total_price,
         'shipping_charge': shipping_charge,
         'final_total': final_total,
+        'addresses': addresses,  # Pass addresses to template
     })
 
 @login_required
 def place_order(request):
-    if request.method == "POST":
-        user = request.user
+    user = request.user
 
-        fullname = request.POST.get("fullname")
-        contact = request.POST.get("contact")
-        add1 = request.POST.get("add1")
-        street = request.POST.get("street")
-        city = request.POST.get("city")
-        zipcode = request.POST.get("zipcode")
-        country = request.POST.get("county", "India")
-        total_price = request.POST.get("total_price", 0)
-        shipping_charge = request.POST.get("shipping_charge", 0)
-        final_total = request.POST.get("final_total", 0)
+    # Show checkout page with cart and addresses
+    if request.method == "GET":
+        addresses = Address.objects.filter(user=user)
+        cart_items = CartItem.objects.filter(user=user)
+        total_price = sum(item.product.price * item.quantity for item in cart_items)
+        shipping_charge = 50 if cart_items else 0
+        final_total = total_price + shipping_charge
+        return render(request, "place_order.html", {
+            "cart_items": cart_items,
+            "total_price": total_price,
+            "shipping_charge": shipping_charge,
+            "final_total": final_total,
+            "addresses": addresses,
+        })
+
+    # Handle placing order
+    if request.method == "POST":
+        selected_address_id = request.POST.get("selected_address")
+        total_price = float(request.POST.get("total_price", 0))
+        shipping_charge = float(request.POST.get("shipping_charge", 0))
+        final_total = float(request.POST.get("final_total", 0))
 
         cart_items = CartItem.objects.filter(user=user)
-
         if not cart_items.exists():
-            messages.error(request, "Your cart is empty.")
-            return redirect('cart')
+            return JsonResponse({"success": False, "message": "Your cart is empty."}, status=400)
 
+        # Use existing address or create new one
+        if selected_address_id:
+            address = get_object_or_404(Address, id=selected_address_id, user=user)
+        else:
+            address = Address.objects.create(
+                user=user,
+                full_name=request.POST.get("fullname"),
+                contact=request.POST.get("contact"),
+                address_line1=request.POST.get("add1"),
+                street=request.POST.get("street"),
+                city=request.POST.get("city"),
+                zipcode=request.POST.get("zipcode"),
+                country=request.POST.get("county", "India")
+            )
+
+        # Create order
         order = Order.objects.create(
             user=user,
-            fullname=fullname,
-            contact=contact,
-            address_line1=add1,
-            street=street,
-            city=city,
-            zipcode=zipcode,
-            country=country,
+            fullname=address.full_name,
+            contact=address.contact,
+            address_line1=address.address_line1,
+            street=address.street,
+            city=address.city,
+            zipcode=address.zipcode,
+            country=address.country,
             total_price=total_price,
             shipping_charge=shipping_charge,
             final_total=final_total
         )
 
+        # Add items to the order
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -350,13 +387,17 @@ def place_order(request):
                 line_total=item.subtotal
             )
 
+        # Clear the cart after order placement
         cart_items.delete()
 
-        messages.success(request, "Your order has been placed successfully!")
-        return redirect('product_list')  # or wherever you want to send user after order
+        # Return JSON response for SweetAlert + redirect
+        return JsonResponse({
+            "success": True,
+            "message": "Your order has been placed successfully!",
+            "redirect_url": "/my-orders"
+        })
 
-    messages.error(request, "Invalid request method.")
-    return redirect('cart')
+    return JsonResponse({"success": False, "message": "Invalid request."}, status=400)
 
 @login_required
 def update_cart_quantity(request, item_id):
@@ -387,12 +428,95 @@ def update_cart_quantity_ajax(request, item_id):
             return JsonResponse({"status": "error", "message": str(e)})
     return JsonResponse({"status": "invalid"})
 
-
+@login_required
 def myOrders(request):
-    return render(request, 'app/my_orders.html')
+    user = request.user
+    orders = (
+        Order.objects.filter(user=user)
+        .prefetch_related('orderitem_set')
+        .order_by('-created_at')  # Assuming you have a created_at field
+    )
 
-def saveAddress(request):
-    return render(request, 'app/save_address.html')
+    return render(request, 'app/my_orders.html', {'orders': orders})
+
+@login_required
+def manage_addresses(request, pk=None):
+    address = None
+    if pk:  # Editing existing address
+        address = get_object_or_404(Address, id=pk, user=request.user)
+
+    if request.method == "POST":
+        if address:  # Update
+            address.full_name = request.POST['full_name']
+            address.contact = request.POST['contact']
+            address.address_line1 = request.POST['address_line1']
+            address.street = request.POST.get('street', '')
+            address.city = request.POST['city']
+            address.zipcode = request.POST['zipcode']
+            address.country = request.POST.get('country', 'India')
+            address.save()
+        else:  # Create
+            Address.objects.create(
+                user=request.user,
+                full_name=request.POST['full_name'],
+                contact=request.POST['contact'],
+                address_line1=request.POST['address_line1'],
+                street=request.POST.get('street', ''),
+                city=request.POST['city'],
+                zipcode=request.POST['zipcode'],
+                country=request.POST.get('country', 'India')
+            )
+        return redirect('manage_addresses')
+
+    addresses = Address.objects.filter(user=request.user)
+    return render(request, "app/save_address.html", {"addresses": addresses, "address": address})
+
+
+
+@login_required
+def save_address(request):
+    if request.method == "POST":
+        pk = request.POST.get('address_id')
+        if pk:
+            # Edit existing
+            address = get_object_or_404(Address, id=pk, user=request.user)
+            address.full_name = request.POST['full_name']
+            address.contact = request.POST['contact']
+            address.address_line1 = request.POST['address_line1']
+            address.street = request.POST.get('street', '')
+            address.city = request.POST['city']
+            address.zipcode = request.POST['zipcode']
+            address.country = request.POST.get('country', 'India')
+            address.save()
+        else:
+            # Add new
+            Address.objects.create(
+                user=request.user,
+                full_name=request.POST['full_name'],
+                contact=request.POST['contact'],
+                address_line1=request.POST['address_line1'],
+                street=request.POST.get('street', ''),
+                city=request.POST['city'],
+                zipcode=request.POST['zipcode'],
+                country=request.POST.get('country', 'India')
+            )
+        return redirect('manage_addresses')
+
+
+def delete_address(request, id):
+    if request.method == "POST" or request.method == "GET":
+        try:
+            address = get_object_or_404(Address, id=id, user=request.user)
+            address.delete()
+            messages.success(request, "✅ Address deleted successfully!")
+        except PermissionDenied:
+            messages.error(request, "❌ You are not allowed to delete this address.")
+        except Exception as e:
+            messages.error(request, f"❌ Something went wrong: {str(e)}")
+    else:
+        messages.error(request, "❌ Invalid request method.")
+
+    return redirect('manage_addresses')
 
 
 

@@ -24,7 +24,7 @@ urlpatterns = [
     path('appointments/delete/<int:booking_id>/', views.delete_booking, name='delete_booking'),
     path('manage-gallery/', views.manage_gallery, name='manage_gallery'),
     path('our-product/', views.our_product, name='our_product'),
-    path('manage-product/', views.manage_product, name='manage_product'),
+    # path('manage-product/', views.manage_product, name='manage_product'),
     path('manage-user/', views.manage_user, name='manage_user'),
     path('cart/', views.cart_view, name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
@@ -34,12 +34,14 @@ urlpatterns = [
     path('manage-products/add/', views.add_product, name='add_product'),
     path('manage-products/edit/<int:product_id>/', views.edit_product, name='edit_product'),
     path('manage-products/delete/<int:product_id>/', views.delete_product, name='delete_product'),
+    path("my-orders/", views.my_orders, name="my_orders"),
     path('checkout/', views.checkout_view, name='checkout'),
     path('place-order/', views.place_order, name='place_order'),
     path('cart/update/<int:item_id>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('cart/update-ajax/<int:item_id>/', views.update_cart_quantity_ajax, name='update_cart_quantity_ajax'),
     path('my-orders/', views.myOrders, name='myOrders'),
-    path('save-address/', views.saveAddress, name='saveAddress'),
-
-
+    path('addresses/', views.manage_addresses, name='manage_addresses'),
+    path('addresses/edit/<int:pk>/', views.manage_addresses, name='edit_address'),
+    path('addresses/save/', views.save_address, name='save_address'),
+    path('addresses/delete/<int:id>/', views.delete_address, name='delete_address'),  # Add edit logic later
 ]
