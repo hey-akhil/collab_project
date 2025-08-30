@@ -29,7 +29,7 @@
           <i class="fas fa-receipt"></i> Orders [Cone]
         </a>
 
-        <a href="{% url 'manage_product' %}" class="{% if request.path == '/products/' %}active{% endif %}">
+        <a href="{% url 'manage_products' %}" class="{% if request.path == '/products/' %}active{% endif %}">
           <i class="fas fa-box"></i> Manage Products
         </a>
         <a href="{% url 'manage_gallery' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
