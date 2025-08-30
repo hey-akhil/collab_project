@@ -3,7 +3,6 @@
 {% block start %}
 <div class="cart-container" style="max-width: 1000px; margin: auto; padding: 30px; color: black;">
     <h1>Your Cart</h1>
-
     {% if cart_items %}
         <table style="width:100%; border-collapse: collapse; margin-bottom: 20px;" id="cartTable">
             <thead>
@@ -48,12 +47,10 @@
             <a href="{% url 'checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
             <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
         </div>
-
     {% else %}
         <p>Your cart is empty. <a href="{% url 'product_list' %}">Shop now</a></p>
     {% endif %}
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const cartTable = document.getElementById('cartTable');

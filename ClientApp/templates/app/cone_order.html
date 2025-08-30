@@ -69,6 +69,58 @@
           {% endfor %}
 
           <hr>
+          <h5 class="mt-3">Delivered At</h5>
+          <div id="selected-address" class="border rounded-3 p-2 mb-2">
+            {% if addresses %}
+              <strong>{{ addresses.0.full_name }}</strong><br>
+              {{ addresses.0.address_line1 }}, {{ addresses.0.street }}<br>
+              {{ addresses.0.city }} - {{ addresses.0.zipcode }}, {{ addresses.0.country }}<br>
+              <small>📞 {{ addresses.0.contact }}</small>
+              <input type="hidden" name="selected_address" id="selected_address_input" value="{{ addresses.0.id }}">
+            {% else %}
+              <p class="text-muted">No saved addresses. Please add one in your profile.</p>
+            {% endif %}
+          </div>
+
+          <!-- Change Address Button -->
+          {% if addresses|length > 1 %}
+            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
+              Change Address
+            </button>
+          {% endif %}
+
+          <!-- Bootstrap Modal -->
+          <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addressModalLabel">Select Delivery Address</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  {% for addr in addresses %}
+                    <div class="border rounded-3 p-2 mb-2 d-flex justify-content-between align-items-center address-option"
+                      data-id="{{ addr.id }}"
+                      data-fullname="{{ addr.full_name }}"
+                      data-line1="{{ addr.address_line1 }}"
+                      data-street="{{ addr.street }}"
+                      data-city="{{ addr.city }}"
+                      data-zipcode="{{ addr.zipcode }}"
+                      data-country="{{ addr.country }}"
+                      data-contact="{{ addr.contact }}">
+                      <div>
+                        <strong>{{ addr.full_name }}</strong><br>
+                        {{ addr.address_line1 }}, {{ addr.street }}<br>
+                        {{ addr.city }} - {{ addr.zipcode }}, {{ addr.country }}<br>
+                        <small>📞 {{ addr.contact }}</small>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-primary select-address">Select</button>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div class="mb-2 d-flex justify-content-between">
             <span>Total Price:</span>
@@ -83,7 +135,7 @@
             <strong style="color: #d9534f;">₹{{ final_total }}</strong>
           </div>
 
-          <!-- Hidden fields to send to backend -->
+          <!-- Hidden fields -->
           <input type="hidden" name="total_price" value="{{ total_price }}">
           <input type="hidden" name="shipping_charge" value="{{ shipping_charge }}">
           <input type="hidden" name="final_total" value="{{ final_total }}">
@@ -99,7 +151,6 @@
             <a href="{% url 'cart' %}"  class="btn btn-secondary flex-grow-1">Back to Cart</a>
             <button type="submit" class="btn btn-warning flex-grow-1">📦 Place Order</button>
           </div>
-
         {% else %}
           <p>No items in cart. <a href="{% url 'product_list' %}">Shop now</a></p>
         {% endif %}
@@ -107,23 +158,105 @@
     </div>
   </form>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  {% if messages %}
-    {% for message in messages %}
-      Swal.fire({
-        icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
-        title: "{{ message.tags|title }}",
-        text: "{{ message }}",
-      }).then(() => {
-        // Optional: Redirect to home if needed
-        // window.location.href = "{% url 'home' %}";
-      });
-    {% endfor %}
-  {% endif %}
+document.addEventListener("DOMContentLoaded", function () {
+  const addressOptions = document.querySelectorAll(".address-option");
+  const selectedAddressDiv = document.getElementById("selected-address");
+  const addressInput = document.getElementById("selected_address_input");
+
+  const fullnameField = document.getElementById("fullname");
+  const contactField = document.getElementById("contact");
+  const add1Field = document.getElementById("add1");
+  const streetField = document.getElementById("street");
+  const cityField = document.getElementById("city");
+  const zipcodeField = document.getElementById("zipcode");
+  const countryField = document.getElementById("county");
+
+  // Helper function to fill form
+  function fillForm(addr) {
+    fullnameField.value = addr.dataset.fullname;
+    contactField.value = addr.dataset.contact;
+    add1Field.value = addr.dataset.line1;
+    streetField.value = addr.dataset.street;
+    cityField.value = addr.dataset.city;
+    zipcodeField.value = addr.dataset.zipcode;
+    countryField.value = addr.dataset.country;
+    addressInput.value = addr.dataset.id;
+  }
+
+  // Load saved selection or default to first
+  const savedAddressId = localStorage.getItem("selectedAddressId");
+  let initialAddress = null;
+
+  if (savedAddressId) {
+    initialAddress = document.querySelector(`.address-option[data-id="${savedAddressId}"]`);
+  }
+  if (!initialAddress && addressOptions.length > 0) {
+    initialAddress = addressOptions[0];
+  }
+  if (initialAddress) {
+    fillForm(initialAddress);
+    selectedAddressDiv.innerHTML = `
+      <strong>${initialAddress.dataset.fullname}</strong><br>
+      ${initialAddress.dataset.line1}, ${initialAddress.dataset.street}<br>
+      ${initialAddress.dataset.city} - ${initialAddress.dataset.zipcode}, ${initialAddress.dataset.country}<br>
+      <small>📞 ${initialAddress.dataset.contact}</small>
+      <input type="hidden" name="selected_address" id="selected_address_input" value="${initialAddress.dataset.id}">
+    `;
+  }
+
+  // Update when address is changed
+  addressOptions.forEach(option => {
+    option.querySelector(".select-address").addEventListener("click", function () {
+      fillForm(option);
+      localStorage.setItem("selectedAddressId", option.dataset.id);
+
+      selectedAddressDiv.innerHTML = `
+        <strong>${option.dataset.fullname}</strong><br>
+        ${option.dataset.line1}, ${option.dataset.street}<br>
+        ${option.dataset.city} - ${option.dataset.zipcode}, ${option.dataset.country}<br>
+        <small>📞 ${option.dataset.contact}</small>
+        <input type="hidden" name="selected_address" id="selected_address_input" value="${option.dataset.id}">
+      `;
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById("addressModal"));
+      modal.hide();
+    });
+  });
+
+  // Handle order submission
+  const orderForm = document.getElementById("orderForm");
+  orderForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(orderForm);
+
+    fetch(orderForm.action, {
+      method: "POST",
+      body: formData,
+      headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire({
+          title: "Order Placed!",
+          text: data.message,
+          icon: "success",
+          confirmButtonText: "Go to My Orders"
+        }).then(() => {
+          window.location.href = data.redirect_url;
+        });
+      } else {
+        Swal.fire({ title: "Error", text: data.message, icon: "error" });
+      }
+    })
+    .catch(error => {
+      Swal.fire({ title: "Error", text: "Could not place the order. Try again.", icon: "error" });
+    });
+  });
 });
 </script>
-
-
 {% endblock %}

@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Booking, Order, OrderItem, Review, Profile, Product, CartItem
-from .models import Booking,Order,OrderItem,CartItem,Product,Review,Profile
+from .models import *
 
 # Register Booking model
 admin.site.register(Booking)
@@ -10,6 +9,7 @@ admin.site.register(Review)
 admin.site.register(Profile)
 admin.site.register(CartItem)
 admin.site.register(Product)
+admin.site.register(Address)
 
 # Inline for OrderItem in Order admin
 class OrderItemInline(admin.TabularInline):
