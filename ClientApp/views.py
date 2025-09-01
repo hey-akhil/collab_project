@@ -473,8 +473,6 @@ def manage_addresses(request, pk=None):
     addresses = Address.objects.filter(user=request.user)
     return render(request, "app/save_address.html", {"addresses": addresses, "address": address})
 
-
-
 @login_required
 def save_address(request):
     if request.method == "POST":
@@ -520,5 +518,37 @@ def delete_address(request, id):
 
     return redirect('manage_addresses')
 
+def userlist(request):
+    # Show only active users
+    users = User.objects.filter(is_active=True)
+    return render(request, 'app/admin/user_manage.html', {'users': users})
 
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        if not user:
+            return JsonResponse({'status': 'fail', 'message': 'User not found.'})
+        # Just deactivate instead of deleting
+        print(user)
+        user.is_active = False
+        user.save()
+        return JsonResponse({'status': 'success', 'message': 'User deactivated successfully.'})
 
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+def edit_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        if not user:
+            # redirect
+            return redirect('/users')
+
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User updated successfully.')
+            return redirect('users')
+        else:
+            form = UserEditForm(instance=user)
+
+        return render(request, 'app/admin/edit_user.html', {'form': form, 'user': user})
