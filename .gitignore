@@ -41,3 +41,6 @@ coverage.xml
 
 # Static files (optional, if auto-generated)
 staticfiles/
+
+__pycache__/
+*.py[cod]
