@@ -13,6 +13,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import *
 from .forms import RegisterForm, LoginForm, ProductForm
 from django.core.exceptions import PermissionDenied
+from .models import GalleryImage
+from .forms import GalleryImageForm
+from django.views.decorators.http import require_POST
 
 def home(request):
     return render(request, 'app/home.html')
@@ -553,3 +556,33 @@ def edit_user(request, user_id):
             form = UserEditForm(instance=user)
 
         return render(request, 'app/admin/edit_user.html', {'form': form, 'user': user})
+
+
+@login_required
+def manage_gallery(request):
+    if request.method == 'POST' and 'image' in request.FILES:
+        # Handle new image upload from main form
+        form = GalleryImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_gallery')  # reload page after upload
+    else:
+        form = GalleryImageForm()
+
+    gallery = GalleryImage.objects.all().order_by('-uploaded_at')
+    return render(request, 'app/admin/manage_gallery.html', {'gallery': gallery, 'form': form})
+
+@require_POST
+def edit_gallery_image(request, pk):
+    image_instance = get_object_or_404(GalleryImage, pk=pk)
+    form = GalleryImageForm(request.POST, request.FILES, instance=image_instance)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({
+            'success': True,
+            'new_image_url': image_instance.image.url,
+            'uploaded_at': image_instance.uploaded_at.strftime('%b %d, %Y %H:%M'),
+            'id': image_instance.pk,
+        })
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid form submission.'})

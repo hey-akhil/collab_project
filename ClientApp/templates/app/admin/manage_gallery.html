@@ -1,6 +1,290 @@
 {% extends 'app/admin/admin.html' %}
 {% load static %}
 
+{% block title %}Manage Gallery{% endblock %}
+
 {% block content %}
-<h1>Gallery manage page</h1>
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  .gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+  }
+  .timestamp {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 0.3rem;
+  }
+  .edit-link {
+    display: block;
+    text-align: center;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: #17a2b8;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .edit-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Upload Button */
+  .upload-btn {
+    background-color: #17a2b8;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+  }
+  .modal-content {
+    background-color: #222;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 420px;
+    color: #ddd;
+    position: relative;
+  }
+  .modal-content img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+  .modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .modal-close:hover {
+    color: #fff;
+  }
+  .modal input[type="file"] {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .modal button {
+    background-color: #17a2b8;
+    border: none;
+    padding: 10px 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+  }
+  .modal button:hover {
+    background-color: #138496;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+</style>
+
+<h2>Manage Gallery</h2>
+
+<!-- Upload Button (triggers file picker) -->
+<label class="upload-btn" for="uploadInput">➕ Upload New Image</label>
+<input id="uploadInput" type="file" name="image" accept="image/*">
+
+<!-- Gallery -->
+<div class="gallery">
+  {% for img in gallery %}
+  <div class="gallery-item">
+    <img src="{{ img.image.url }}" alt="Gallery Image {{ forloop.counter }}">
+    <div class="timestamp">{{ img.uploaded_at|date:"M d, Y H:i" }}</div>
+    <span class="edit-link"
+          data-id="{{ img.pk }}"
+          data-img-url="{{ img.image.url }}"
+          data-uploaded="{{ img.uploaded_at|date:"M d, Y H:i" }}">Edit Image</span>
+  </div>
+  {% empty %}
+  <p>No images uploaded yet.</p>
+  {% endfor %}
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <h3>Edit Image</h3>
+    <img id="currentImage" src="" alt="Current Image">
+    <p id="uploadTimestamp" style="font-size: 0.85rem; color: #bbb;"></p>
+    <form id="editImageForm" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="image" accept="image/*" required>
+      <button type="submit">Upload New Image</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  const uploadInput = document.getElementById('uploadInput');
+
+  uploadInput.addEventListener('change', async function () {
+    const file = uploadInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    try {
+      const response = await fetch("{% url 'manage_gallery' %}", {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.redirected || response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Image uploaded!',
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Upload Failed',
+          text: 'Something went wrong!',
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Network issue or server error.',
+      });
+    }
+  });
+
+  // Modal logic
+  const modal = document.getElementById('editModal');
+  const modalClose = document.getElementById('modalClose');
+  const currentImage = document.getElementById('currentImage');
+  const uploadTimestamp = document.getElementById('uploadTimestamp');
+  const editImageForm = document.getElementById('editImageForm');
+
+  document.querySelectorAll('.edit-link').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const imgUrl = el.dataset.imgUrl;
+      const timestamp = el.dataset.uploaded;
+
+      currentImage.src = imgUrl;
+      uploadTimestamp.textContent = `Uploaded at: ${timestamp}`;
+      editImageForm.action = `/admin/gallery/edit/${id}/`;
+      modal.style.display = 'block';
+    });
+  });
+
+  modalClose.onclick = () => {
+    modal.style.display = 'none';
+    editImageForm.reset();
+  };
+  window.onclick = event => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+      editImageForm.reset();
+    }
+  };
+
+  editImageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(editImageForm);
+    const url = editImageForm.action;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const timestamp = data.uploaded_at;
+        const newImageUrl = data.new_image_url + '?t=' + new Date().getTime();
+
+        currentImage.src = newImageUrl;
+        uploadTimestamp.textContent = `Uploaded at: ${timestamp}`;
+
+        const galleryItem = document.querySelector(`.edit-link[data-id="${data.id}"]`).closest('.gallery-item');
+        const galleryImg = galleryItem.querySelector('img');
+        const galleryTimestamp = galleryItem.querySelector('.timestamp');
+
+        galleryImg.src = newImageUrl;
+        galleryTimestamp.textContent = timestamp;
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Image updated!',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+
+        modal.style.display = 'none';
+        editImageForm.reset();
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.error || 'Failed to update image.',
+        });
+      }
+
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Network Error',
+        text: 'Please try again later.',
+      });
+    }
+  });
+</script>
+
 {% endblock %}
