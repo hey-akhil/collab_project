@@ -27,7 +27,7 @@ def about(request):
     return render(request, "app/about_us.html")
 
 def cone_order(request):
-    return render(request, "app/cone_order.html")
+    return render(request, "app/order_checkout_main_page.html")
 
 @login_required
 def profile_view(request):
@@ -195,8 +195,6 @@ def our_product(request):
     products = Product.objects.all()
     return render(request, 'app/product.html', {'products': products})
 
-def manage_product(request):
-    return render(request, 'app/admin/manage_product.html')
 
 def manage_user(request):
     return render(request, 'app/admin/user_manage.html')
@@ -312,7 +310,7 @@ def checkout_view(request):
     # Fetch all saved addresses of the user
     addresses = Address.objects.filter(user=request.user)
 
-    return render(request, 'app/cone_order.html', {
+    return render(request, 'app/order_checkout_main_page.html', {
         'cart_items': cart_items,
         'total_price': total_price,
         'shipping_charge': shipping_charge,

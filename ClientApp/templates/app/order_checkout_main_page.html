@@ -72,22 +72,25 @@
           <h5 class="mt-3">Delivered At</h5>
           <div id="selected-address" class="border rounded-3 p-2 mb-2">
             {% if addresses %}
-              <strong>{{ addresses.0.full_name }}</strong><br>
-              {{ addresses.0.address_line1 }}, {{ addresses.0.street }}<br>
-              {{ addresses.0.city }} - {{ addresses.0.zipcode }}, {{ addresses.0.country }}<br>
-              <small>📞 {{ addresses.0.contact }}</small>
-              <input type="hidden" name="selected_address" id="selected_address_input" value="{{ addresses.0.id }}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>{{ addresses.0.full_name }}</strong><br>
+                  {{ addresses.0.address_line1 }}, {{ addresses.0.street }}<br>
+                  {{ addresses.0.city }} - {{ addresses.0.zipcode }}, {{ addresses.0.country }}<br>
+                  <small>📞 {{ addresses.0.contact }}</small>
+                  <input type="hidden" name="selected_address" id="selected_address_input" value="{{ addresses.0.id }}">
+                </div>
+                {% if addresses|length > 1 %}
+                  <button type="button" class="btn btn-outline-primary btn-sm ms-2"
+                          data-bs-toggle="modal" data-bs-target="#addressModal">
+                    Change Address
+                  </button>
+                {% endif %}
+              </div>
             {% else %}
               <p class="text-muted">No saved addresses. Please add one in your profile.</p>
             {% endif %}
           </div>
-
-          <!-- Change Address Button -->
-          {% if addresses|length > 1 %}
-            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addressModal">
-              Change Address
-            </button>
-          {% endif %}
 
           <!-- Bootstrap Modal -->
           <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
@@ -174,7 +177,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const zipcodeField = document.getElementById("zipcode");
   const countryField = document.getElementById("county");
 
-  // Helper function to fill form
   function fillForm(addr) {
     fullnameField.value = addr.dataset.fullname;
     contactField.value = addr.dataset.contact;
@@ -186,7 +188,28 @@ document.addEventListener("DOMContentLoaded", function () {
     addressInput.value = addr.dataset.id;
   }
 
-  // Load saved selection or default to first
+  function updateSelectedAddressHTML(addr) {
+    const showChangeButton = addressOptions.length > 1;
+
+    selectedAddressDiv.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <strong>${addr.dataset.fullname}</strong><br>
+          ${addr.dataset.line1}, ${addr.dataset.street}<br>
+          ${addr.dataset.city} - ${addr.dataset.zipcode}, ${addr.dataset.country}<br>
+          <small>📞 ${addr.dataset.contact}</small>
+          <input type="hidden" name="selected_address" id="selected_address_input" value="${addr.dataset.id}">
+        </div>
+        ${showChangeButton ? `
+          <button type="button" class="btn btn-outline-primary btn-sm ms-2"
+                  data-bs-toggle="modal" data-bs-target="#addressModal">
+            Change Address
+          </button>` : ''}
+      </div>
+    `;
+  }
+
+  // Preselect saved or first address
   const savedAddressId = localStorage.getItem("selectedAddressId");
   let initialAddress = null;
 
@@ -198,28 +221,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   if (initialAddress) {
     fillForm(initialAddress);
-    selectedAddressDiv.innerHTML = `
-      <strong>${initialAddress.dataset.fullname}</strong><br>
-      ${initialAddress.dataset.line1}, ${initialAddress.dataset.street}<br>
-      ${initialAddress.dataset.city} - ${initialAddress.dataset.zipcode}, ${initialAddress.dataset.country}<br>
-      <small>📞 ${initialAddress.dataset.contact}</small>
-      <input type="hidden" name="selected_address" id="selected_address_input" value="${initialAddress.dataset.id}">
-    `;
+    updateSelectedAddressHTML(initialAddress);
   }
 
-  // Update when address is changed
+  // Handle address selection
   addressOptions.forEach(option => {
     option.querySelector(".select-address").addEventListener("click", function () {
       fillForm(option);
       localStorage.setItem("selectedAddressId", option.dataset.id);
-
-      selectedAddressDiv.innerHTML = `
-        <strong>${option.dataset.fullname}</strong><br>
-        ${option.dataset.line1}, ${option.dataset.street}<br>
-        ${option.dataset.city} - ${option.dataset.zipcode}, ${option.dataset.country}<br>
-        <small>📞 ${option.dataset.contact}</small>
-        <input type="hidden" name="selected_address" id="selected_address_input" value="${option.dataset.id}">
-      `;
+      updateSelectedAddressHTML(option);
 
       const modal = bootstrap.Modal.getInstance(document.getElementById("addressModal"));
       modal.hide();
@@ -236,7 +246,9 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(orderForm.action, {
       method: "POST",
       body: formData,
-      headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
+      headers: {
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+      }
     })
     .then(response => response.json())
     .then(data => {
@@ -250,13 +262,22 @@ document.addEventListener("DOMContentLoaded", function () {
           window.location.href = data.redirect_url;
         });
       } else {
-        Swal.fire({ title: "Error", text: data.message, icon: "error" });
+        Swal.fire({
+          title: "Error",
+          text: data.message,
+          icon: "error"
+        });
       }
     })
     .catch(error => {
-      Swal.fire({ title: "Error", text: "Could not place the order. Try again.", icon: "error" });
+      Swal.fire({
+        title: "Error",
+        text: "Could not place the order. Try again.",
+        icon: "error"
+      });
     });
   });
 });
 </script>
+
 {% endblock %}
