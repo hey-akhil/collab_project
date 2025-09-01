@@ -187,6 +187,9 @@ def delete_booking(request, booking_id):
     booking.delete()
     return redirect(reverse('Appointment_booking_list'))
 
+def gallery(request):
+    return render(request, 'app/gallery.html')
+
 def manage_gallery(request):
     return render(request, 'app/admin/manage_gallery.html')
 
