@@ -140,31 +140,47 @@
     <div class="sidebar">
       <div class="brand">Admin Panel</div>
       <nav>
-        <a href="{% url 'admin_dashboard' %}" class="{% if request.path == '/dashboard/' %}active{% endif %}">
-          <i class="fas fa-home"></i> Home
-        </a>
-        <a href="{% url 'users' %}" class="{% if request.path == '/customers/' %}active{% endif %}">
-          <i class="fas fa-user"></i> Manage Users
-        </a>
-        <a href="{% url 'Appointment_booking_list' %}" class="{% if request.path == '/appointments/' %}active{% endif %}">
-          <i class="fas fa-calendar-check"></i> Appointment
-        </a>
-        <a href="{% url 'order_list' %}" class="{% if request.path == '/orders/' %}active{% endif %}">
-          <i class="fas fa-receipt"></i> Orders [Cone]
-        </a>
-        <a href="{% url 'manage_products' %}" class="{% if request.path == '/products/' %}active{% endif %}">
-          <i class="fas fa-box"></i> Manage Products
-        </a>
-        <a href="{% url 'manage_gallery' %}" class="{% if request.path == '/gallery/' %}active{% endif %}">
-          <i class="fas fa-image"></i> Manage Gallery
-        </a>
-        <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
-          <i class="fas fa-image"></i> Back to main
-        </a>
-        <a href="{% url 'logout' %}">
-          <i class="fas fa-arrow-right-from-bracket"></i> Logout
-        </a>
-      </nav>
+          {% url 'admin_dashboard' as dashboard_url %}
+          <a href="{{ dashboard_url }}" class="{% if request.path == dashboard_url %}active{% endif %}">
+            <i class="fas fa-home"></i> Home
+          </a>
+
+          {% url 'users' as users_url %}
+          <a href="{{ users_url }}" class="{% if request.path == users_url %}active{% endif %}">
+            <i class="fas fa-user"></i> Manage Users
+          </a>
+
+          {% url 'Appointment_booking_list' as appointments_url %}
+          <a href="{{ appointments_url }}" class="{% if request.path == appointments_url %}active{% endif %}">
+            <i class="fas fa-calendar-check"></i> Appointment
+          </a>
+
+          {% url 'order_list' as orders_url %}
+          <a href="{{ orders_url }}" class="{% if request.path == orders_url %}active{% endif %}">
+            <i class="fas fa-receipt"></i> Orders [Cone]
+          </a>
+
+          {% url 'manage_products' as products_url %}
+          <a href="{{ products_url }}" class="{% if request.path == products_url %}active{% endif %}">
+            <i class="fas fa-box"></i> Manage Products
+          </a>
+
+          {% url 'manage_gallery' as gallery_url %}
+          <a href="{{ gallery_url }}" class="{% if request.path == gallery_url %}active{% endif %}">
+            <i class="fas fa-image"></i> Manage Gallery
+          </a>
+
+          {% url 'home' as home_url %}
+          <a href="{{ home_url }}" class="{% if request.path == home_url %}active{% endif %}">
+            <i class="fas fa-globe"></i> Back to Main
+          </a>
+
+          {% url 'logout' as logout_url %}
+          <a href="{{ logout_url }}">
+            <i class="fas fa-arrow-right-from-bracket"></i> Logout
+          </a>
+        </nav>
+
       <div class="user-info">
         <img src="https://i.pravatar.cc/32" alt="user photo" />
         <span>{{ user.username }} <i class="fas fa-caret-down"></i></span>

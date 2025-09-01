@@ -2,44 +2,115 @@
 {% block start %}
 {% load static %}
 
+<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
 
-<body>
-  <div class="container-fluid" style="margin-top: 5rem; text-align: center;">
-    <h2 class="fw-bold">🛍️ Explore Our Products</h2>
-    <p class="subtitle mb-5">
-      Discover beautifully crafted products in various sizes and colors at
-      <strong>Deepak Mehndi Art</strong>.
-    </p>
+<!-- Light Theme Custom Styles -->
+<style>
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
 
-    <div class="services">
-      {% for product in products %}
-      <div class="service-card shadow-sm">
+  h2 {
+    color: #343a40;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    color: #555;
+    font-size: 1.1rem;
+  }
+
+  .card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card img {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .card-title {
+    font-weight: 600;
+    color: #007bff;
+  }
+
+  .card-text {
+    color: #555;
+    font-size: 0.95rem;
+  }
+
+  .btn-custom {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+  }
+
+  .btn-custom:hover {
+    background-color: #0056b3;
+  }
+
+  .product-info {
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+    color: #444;
+  }
+
+</style>
+
+<!-- Product Section -->
+<div class="container py-5 text-center">
+  <h2 class="fw-bold">🛍️ Explore Our Products</h2>
+  <p class="subtitle mb-5">
+    Discover beautifully crafted products in various sizes and colors at
+    <strong>Deepak Mehndi Art</strong>.
+  </p>
+
+  <div class="row g-4">
+    {% for product in products %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100">
         <!-- Product Image -->
         {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
         {% else %}
-        <img src="{% static 'img/placeholder.png' %}" alt="No Image">
+        <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="No Image">
         {% endif %}
 
-        <!-- Product Info -->
-        <h3 class="mt-2">{{ product.name }}</h3>
-        <p><strong>Color:</strong> {{ product.color }}</p>
-        <p><strong>Size:</strong> {{ product.size }}</p>
-        <p><strong>Price:</strong> ₹{{ product.price }}</p>
-        <p>{{ product.details|truncatechars:80 }}</p>
+        <!-- Card Body -->
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="product-info"><strong>Color:</strong> {{ product.color }}</p>
+          <p class="product-info"><strong>Size:</strong> {{ product.size }}</p>
+          <p class="product-info"><strong>Price:</strong> ₹{{ product.price }}</p>
+          <p class="card-text">{{ product.details|truncatechars:80 }}</p>
 
-        {% if user.is_authenticated %}
-          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark mt-2">ADD TO CART</a>
-        {% else %}
-          <a href="{% url 'login' %}?next={% url 'our_product' %}" class="btn btn-dark mt-2">LOGIN TO BUY</a>
-        {% endif %}
+          {% if user.is_authenticated %}
+          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-custom mt-auto">ADD TO CART</a>
+          {% else %}
+          <a href="{% url 'login' %}?next={% url 'our_product' %}" class="btn btn-custom mt-auto">LOGIN TO BUY</a>
+          {% endif %}
+        </div>
       </div>
-      {% empty %}
-      <p class="text-muted">No products available right now. Please check back later.</p>
-      {% endfor %}
     </div>
+    {% empty %}
+    <p class="text-muted">No products available right now. Please check back later.</p>
+    {% endfor %}
   </div>
-</body>
+</div>
+
 {% endblock %}
