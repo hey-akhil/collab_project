@@ -1,115 +1,86 @@
 {% extends 'app/admin/admin.html' %}
 {% load static %}
 
+{% block title %}Order #{{ order.id }} Details{% endblock %}
+
 {% block content %}
-<style>
-    body {
-        color: black;
-    }
+<h1 class="mb-4 text-info">Order Details - #{{ order.id }}</h1>
 
-    .order-details {
-        margin-top: 20px;
-    }
-
-    .order-details-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .order-details-table td, .order-details-table th {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-    }
-
-    .order-details-table th {
-        background-color: #f2f2f2;
-        width: 200px;
-    }
-
-    .product-table {
-        margin-top: 30px;
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .product-table th, .product-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-    }
-
-    .product-table th {
-        background-color: #e6f7ff;
-    }
-
-    .back-link {
-        margin-top: 20px;
-        display: inline-block;
-    }
-</style>
-
-<h1>Order Details - #{{ order.id }}</h1>
-
-<div class="order-details">
-    <table class="order-details-table">
+<!-- Order Info Card -->
+<div class="card shadow-sm rounded mb-4 bg-dark text-light border-info">
+  <div class="card-header bg-info text-dark">
+    <strong>Customer & Order Info</strong>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-bordered mb-0 table-dark text-info">
+      <tbody>
         <tr>
-            <th>Full Name</th>
-            <td>{{ order.fullname }}</td>
+          <th scope="row" class="bg-secondary w-25">Full Name</th>
+          <td>{{ order.fullname }}</td>
         </tr>
         <tr>
-            <th>Contact</th>
-            <td>{{ order.contact }}</td>
+          <th scope="row" class="bg-secondary">Contact</th>
+          <td>{{ order.contact }}</td>
         </tr>
         <tr>
-            <th>Address</th>
-            <td>{{ order.address_line1 }}, {{ order.street }}, {{ order.city }} - {{ order.zipcode }}, {{ order.country }}</td>
+          <th scope="row" class="bg-secondary">Address</th>
+          <td>
+            {{ order.address_line1 }}, {{ order.street }}, {{ order.city }} - {{ order.zipcode }}, {{ order.country }}
+          </td>
         </tr>
         <tr>
-            <th>Total Price</th>
-            <td>₹{{ order.total_price }}</td>
+          <th scope="row" class="bg-secondary">Total Price</th>
+          <td>₹{{ order.total_price }}</td>
         </tr>
         <tr>
-            <th>Shipping Charge</th>
-            <td>₹{{ order.shipping_charge }}</td>
+          <th scope="row" class="bg-secondary">Shipping Charge</th>
+          <td>₹{{ order.shipping_charge }}</td>
         </tr>
         <tr>
-            <th>Final Total</th>
-            <td>₹{{ order.final_total }}</td>
+          <th scope="row" class="bg-secondary">Final Total</th>
+          <td><strong>₹{{ order.final_total }}</strong></td>
         </tr>
         <tr>
-            <th>Created At</th>
-            <td>{{ order.created_at }}</td>
+          <th scope="row" class="bg-secondary">Created At</th>
+          <td>
+            <span class="badge bg-info text-dark">{{ order.created_at|date:"M d, Y H:i" }}</span>
+          </td>
         </tr>
+      </tbody>
     </table>
+  </div>
 </div>
 
-<h2 class="mt-4">Products in this Order</h2>
-<table class="product-table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Color</th>
-            <th>Quantity</th>
-            <th>Line Total</th>
-        </tr>
+<!-- Ordered Products Table -->
+<h2 class="mb-3 text-info">Products in this Order</h2>
+
+<div class="table-responsive">
+  <table class="table table-hover table-bordered align-middle shadow-sm rounded bg-dark text-light">
+    <thead class="table-dark text-info text-center">
+      <tr>
+        <th>#</th>
+        <th>Color</th>
+        <th>Quantity</th>
+        <th>Line Total</th>
+      </tr>
     </thead>
     <tbody>
-        {% for item in order_items %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ item.color }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>₹{{ item.line_total }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="4" class="text-center">No items found for this order.</td>
-        </tr>
-        {% endfor %}
+      {% for item in order_items %}
+      <tr>
+        <td class="text-center text-info">{{ forloop.counter }}</td>
+        <td>{{ item.color }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ item.line_total }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center text-info">No items found for this order.</td>
+      </tr>
+      {% endfor %}
     </tbody>
-</table>
+  </table>
+</div>
 
-<a class="back-link btn btn-secondary mt-3" href="{% url 'order_list' %}">← Back to Orders</a>
-
+<!-- Back Button -->
+<a class="btn btn-outline-info mt-3" href="{% url 'order_list' %}">← Back to Orders</a>
 {% endblock %}

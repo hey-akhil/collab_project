@@ -13,6 +13,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import *
 from .forms import RegisterForm, LoginForm, ProductForm
 from django.core.exceptions import PermissionDenied
+from .models import GalleryImage
+from .forms import GalleryImageForm
+from django.views.decorators.http import require_POST
 
 def home(request):
     return render(request, 'app/home.html')
@@ -186,6 +189,9 @@ def delete_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     booking.delete()
     return redirect(reverse('Appointment_booking_list'))
+
+def gallery(request):
+    return render(request, 'app/gallery.html')
 
 def manage_gallery(request):
     return render(request, 'app/admin/manage_gallery.html')
@@ -471,8 +477,6 @@ def manage_addresses(request, pk=None):
     addresses = Address.objects.filter(user=request.user)
     return render(request, "app/save_address.html", {"addresses": addresses, "address": address})
 
-
-
 @login_required
 def save_address(request):
     if request.method == "POST":
@@ -518,5 +522,67 @@ def delete_address(request, id):
 
     return redirect('manage_addresses')
 
+def userlist(request):
+    # Show only active users
+    users = User.objects.filter(is_active=True)
+    return render(request, 'app/admin/user_manage.html', {'users': users})
+
+def delete_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        if not user:
+            return JsonResponse({'status': 'fail', 'message': 'User not found.'})
+        # Just deactivate instead of deleting
+        print(user)
+        user.is_active = False
+        user.save()
+        return JsonResponse({'status': 'success', 'message': 'User deactivated successfully.'})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+def edit_user(request, user_id):
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        if not user:
+            # redirect
+            return redirect('/users')
+
+        form = UserEditForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'User updated successfully.')
+            return redirect('users')
+        else:
+            form = UserEditForm(instance=user)
+
+        return render(request, 'app/admin/edit_user.html', {'form': form, 'user': user})
 
 
+@login_required
+def manage_gallery(request):
+    if request.method == 'POST' and 'image' in request.FILES:
+        # Handle new image upload from main form
+        form = GalleryImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_gallery')  # reload page after upload
+    else:
+        form = GalleryImageForm()
+
+    gallery = GalleryImage.objects.all().order_by('-uploaded_at')
+    return render(request, 'app/admin/manage_gallery.html', {'gallery': gallery, 'form': form})
+
+@require_POST
+def edit_gallery_image(request, pk):
+    image_instance = get_object_or_404(GalleryImage, pk=pk)
+    form = GalleryImageForm(request.POST, request.FILES, instance=image_instance)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({
+            'success': True,
+            'new_image_url': image_instance.image.url,
+            'uploaded_at': image_instance.uploaded_at.strftime('%b %d, %Y %H:%M'),
+            'id': image_instance.pk,
+        })
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid form submission.'})

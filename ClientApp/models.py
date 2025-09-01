@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django import forms
 
 class Booking(models.Model):
     service = models.CharField(max_length=100)
@@ -103,3 +104,16 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.city}, {self.country}"
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'is_active', 'is_staff']
+
+class GalleryImage(models.Model):
+    title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='gallery/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from .models import *
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -21,7 +22,7 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Username"}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "Password"}))
 
-from .models import Product
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -29,3 +30,8 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'details': forms.Textarea(attrs={'rows': 4}),
         }
+
+class GalleryImageForm(forms.ModelForm):
+    class Meta:
+        model = GalleryImage
+        fields = ['image']

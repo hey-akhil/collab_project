@@ -4,47 +4,57 @@
 {% block title %}Appointments{% endblock %}
 
 {% block content %}
-<h1 class="mb-4 text-black">Appointments</h1>
+<h1 class="mb-4 text-info">Appointments</h1>
 
 {% if bookings %}
-  <table class="table table-striped align-middle">
-    <thead class="table-light">
+<div class="table-responsive">
+  <table class="table table-hover table-bordered align-middle shadow-sm rounded bg-dark text-light">
+    <thead class="table-dark text-info">
       <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Service</th>
-        <th>Date & Time</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Description</th>
-        <th>Created At</th>
-        <th>Action</th>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Service</th>
+        <th scope="col">Date & Time</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col" style="max-width: 200px;">Description</th>
+        <th scope="col">Created At</th>
+        <th scope="col" class="text-center">Action</th>
       </tr>
     </thead>
     <tbody>
       {% for booking in bookings %}
-        <tr>
-          <td>{{ booking.id }}</td>
-          <td>{{ booking.name }}</td>
-          <td>{{ booking.service }}</td>
-          <td>{{ booking.datetime|date:"M d, Y H:i" }}</td>
-          <td>{{ booking.email }}</td>
-          <td>{{ booking.phone }}</td>
-          <td>{{ booking.description|default:"-" }}</td>
-          <td>{{ booking.created_at|date:"M d, Y H:i" }}</td>
-          <td>
-            <form action="{% url 'delete_booking' booking.id %}" method="post" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this booking?');">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            </form>
-          </td>
-        </tr>
+      <tr>
+        <td class="text-center text-info">{{ booking.id }}</td>
+        <td>{{ booking.name }}</td>
+        <td>{{ booking.service }}</td>
+        <td>
+          <span class="badge bg-info text-dark">
+            {{ booking.datetime|date:"M d, Y H:i" }}
+          </span>
+        </td>
+        <td>{{ booking.email }}</td>
+        <td>{{ booking.phone }}</td>
+        <td style="max-width: 200px; word-wrap: break-word;">
+          {{ booking.description|default:"-" }}
+        </td>
+        <td>
+          <small class="text-muted">{{ booking.created_at|date:"M d, Y H:i" }}</small>
+        </td>
+        <td class="text-center">
+          <form action="{% url 'delete_booking' booking.id %}" method="post" onsubmit="return confirm('Delete this booking?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
+</div>
 {% else %}
-  <div class="alert alert-warning">No appointments found.</div>
+<div class="alert alert-warning">No appointments found.</div>
 {% endif %}
 {% endblock %}
