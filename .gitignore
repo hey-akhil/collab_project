@@ -44,3 +44,8 @@ staticfiles/
 
 __pycache__/
 *.py[cod]
+# Ignore Python bytecode
+
+*.pyc
+*.pyo
+*.pyd
