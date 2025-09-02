@@ -1,5 +1,9 @@
 /* navbar.css */
 
+body{
+    font-family:'Montserrat', sans-serif;
+}
+
 .navbar {
   background: #f8f9fa;
   padding: 0px 30px;

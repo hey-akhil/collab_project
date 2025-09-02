@@ -1,3 +1,7 @@
+
+body {
+      font-family: 'Montserrat', sans-serif !important;
+    }
  .contact-header {
       background: url('your-image.jpg') center center/cover no-repeat;
       height: 300px;
