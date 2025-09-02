@@ -46,6 +46,7 @@ urlpatterns = [
     path('addresses/delete/<int:id>/', views.delete_address, name='delete_address'),
     path('users/edit/<int:user_id>/', views.edit_user, name='edit_user'),
     path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),# Add edit logic later
-    path('admin/gallery/', views.manage_gallery, name='manage_gallery'),
-    path('admin/gallery/edit/<int:pk>/', views.edit_gallery_image, name='edit_gallery_image'),
+    path('manage-gallery/', views.manage_gallery, name='manage_gallery'),
+    path('edit-gallery/<int:id>/', views.edit_gallery_image, name='edit_gallery_image'),
+    path('delete-gallery/<int:id>/', views.delete_gallery_image, name='delete_gallery_image'),
 ]

@@ -1,4 +1,5 @@
 import json
+import os
 from decimal import Decimal
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,7 +16,9 @@ from .forms import RegisterForm, LoginForm, ProductForm
 from django.core.exceptions import PermissionDenied
 from .models import GalleryImage
 from .forms import GalleryImageForm
-from django.views.decorators.http import require_POST
+from django.http import JsonResponse, HttpResponseBadRequest, Http404
+from django.utils.timezone import now
+import os
 
 def home(request):
     return render(request, 'app/home.html')
@@ -558,31 +561,46 @@ def edit_user(request, user_id):
         return render(request, 'app/admin/edit_user.html', {'form': form, 'user': user})
 
 
-@login_required
 def manage_gallery(request):
-    if request.method == 'POST' and 'image' in request.FILES:
-        # Handle new image upload from main form
-        form = GalleryImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('manage_gallery')  # reload page after upload
-    else:
-        form = GalleryImageForm()
+    if request.method == 'POST' and request.FILES.get('image'):
+        # Upload new image
+        image = request.FILES['image']
+        obj = GalleryImage.objects.create(image=image)
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'id': obj.id,
+                'new_image_url': obj.image.url,
+                'uploaded_at': obj.uploaded_at.strftime("%b %d, %Y %H:%M")
+            })
+        return redirect('manage_gallery')
 
     gallery = GalleryImage.objects.all().order_by('-uploaded_at')
-    return render(request, 'app/admin/manage_gallery.html', {'gallery': gallery, 'form': form})
+    return render(request, 'app/admin/manage_gallery.html', {'gallery': gallery})
 
-@require_POST
-def edit_gallery_image(request, pk):
-    image_instance = get_object_or_404(GalleryImage, pk=pk)
-    form = GalleryImageForm(request.POST, request.FILES, instance=image_instance)
-    if form.is_valid():
-        form.save()
-        return JsonResponse({
-            'success': True,
-            'new_image_url': image_instance.image.url,
-            'uploaded_at': image_instance.uploaded_at.strftime('%b %d, %Y %H:%M'),
-            'id': image_instance.pk,
-        })
-    else:
-        return JsonResponse({'success': False, 'error': 'Invalid form submission.'})
+def edit_gallery_image(request, id):
+    image = get_object_or_404(GalleryImage, pk=id)
+    if request.method == "POST" and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        form = GalleryImageForm(request.POST, request.FILES, instance=image)
+        if form.is_valid():
+            image = form.save()
+            return JsonResponse({
+                'success': True,
+                'id': image.pk,
+                'new_image_url': image.image.url,
+                'uploaded_at': image.uploaded_at.strftime('%b %d, %Y %H:%M')
+            })
+        return JsonResponse({'success': False, 'errors': form.errors})
+    # Non-AJAX fallback
+    form = GalleryImageForm(instance=image)
+    return render(request, 'gallery/edit_gallery_image.html', {'form': form})
+
+def delete_gallery_image(request, id):
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        try:
+            image = GalleryImage.objects.get(pk=id)
+            image.delete()
+            return JsonResponse({'success': True})
+        except GalleryImage.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Image not found'})
+    raise Http404()
