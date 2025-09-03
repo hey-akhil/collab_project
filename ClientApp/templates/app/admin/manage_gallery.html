@@ -132,11 +132,21 @@ uploadInput.addEventListener('change', async function() {
       div.className='gallery-item';
       div.dataset.id = data.id;
       div.innerHTML = `
-        <img src="${data.new_image_url}" alt="Gallery Image">
-        <div class="timestamp">${data.uploaded_at}</div>
-        <span class="edit-link" data-id="${data.id}" data-img-url="${data.new_image_url}" data-uploaded="${data.uploaded_at}">Edit Image</span>
-        <span class="delete-link" data-id="${data.id}">Delete Image</span>
-      `;
+      <img src="${data.new_image_url}" alt="Gallery Image">
+      <div class="timestamp">${data.uploaded_at}</div>
+      <div class="editDeleteBtn">
+        <span class="btn btn-info text-white edit-link"
+              data-id="${data.id}"
+              data-img-url="${data.new_image_url}"
+              data-uploaded="${data.uploaded_at}">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </span>
+        <span class="btn btn-danger text-white delete-link"
+              data-id="${data.id}">
+          <i class="fa-solid fa-trash"></i>
+        </span>
+      </div>
+    `;
       galleryContainer.prepend(div);
       setupEditLinks();
       setupDeleteLinks();
