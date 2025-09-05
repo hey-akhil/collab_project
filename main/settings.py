@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-nw3v+ux7zcwpe^7$x&65vy7f4@37vrk%dfu_7=p3hmp002ejq%
 DEBUG = True
 
 ALLOWED_HOSTS = ['mehndi-art.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://mehndi-art.onrender.com']
+
 
 
 
