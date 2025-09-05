@@ -1,31 +1,27 @@
-# Python virtual environments
+.venv
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations (optional, if you want to ignore compiled ones only)
+*.sqlite3
+*.log
+
+# Environment files
+.env
 .venv/
 env/
 venv/
 
-# Python bytecode
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyo
-*.pyd
-
-# Django
-*.sqlite3
-*.log
-staticfiles/
-
-# Environment files
-.env
-
-# VSCode / IDEs
+# VSCode and IDE settings
 .vscode/
 .idea/
 
-# macOS
+# macOS files
 .DS_Store
 
-# Test / coverage
+# Coverage and test reports
 htmlcov/
 .coverage
 .tox/
@@ -35,10 +31,16 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
+
+# Pytest
 .pytest_cache/
+
+# MyPy
 .mypy_cache/
 
-# Node.js (optional if you have frontend)
-node_modules/
-dist/
-build/
+# Static files (optional, if auto-generated)
+staticfiles/
+
+__pycache__/
+*.py[cod]

@@ -45,7 +45,13 @@ def profile_view(request):
         user.email = new_email
         user.save()
         return redirect('profile')
-    return render(request, 'app/profile.html')
+
+    # ✅ Get the latest order for the current user
+    latest_order = Order.objects.filter(user=request.user).order_by('-created_at').first()
+
+    return render(request, 'app/profile.html', {
+        'recent_orders': [latest_order] if latest_order else []
+    })
 
 def book_appointment(request):
     success = False
@@ -194,10 +200,8 @@ def delete_booking(request, booking_id):
     return redirect(reverse('Appointment_booking_list'))
 
 def gallery(request):
-    return render(request, 'app/gallery.html')
-
-def manage_gallery(request):
-    return render(request, 'app/admin/manage_gallery.html')
+    gallery_data = GalleryImage.objects.all()
+    return render(request, 'app/gallery.html',{'gallery_data': gallery_data} )
 
 def our_product(request):
     # Fetch all products from the database
@@ -509,9 +513,8 @@ def save_address(request):
             )
         return redirect('manage_addresses')
 
-
 def delete_address(request, id):
-    if request.method == "POST" or request.method == "GET":
+    if request.method in ["POST", "GET"]:
         try:
             address = get_object_or_404(Address, id=id, user=request.user)
             address.delete()

@@ -89,6 +89,8 @@
               </div>
             {% else %}
               <p class="text-muted">No saved addresses. Please add one in your profile.</p>
+              <!-- hidden input in case no saved address -->
+              <input type="hidden" name="selected_address" id="selected_address_input" value="">
             {% endif %}
           </div>
 
@@ -156,6 +158,7 @@
           </div>
         {% else %}
           <p>No items in cart. <a href="{% url 'product_list' %}">Shop now</a></p>
+          <input type="hidden" name="selected_address" id="selected_address_input" value="">
         {% endif %}
       </div>
     </div>
@@ -209,7 +212,11 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
   }
 
-  // Preselect saved or first address
+  function clearSelectedAddress() {
+    addressInput.value = "";
+  }
+
+  // Load previously selected address or default to first address
   const savedAddressId = localStorage.getItem("selectedAddressId");
   let initialAddress = null;
 
@@ -224,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updateSelectedAddressHTML(initialAddress);
   }
 
-  // Handle address selection
+  // Address selection from modal
   addressOptions.forEach(option => {
     option.querySelector(".select-address").addEventListener("click", function () {
       fillForm(option);
@@ -236,7 +243,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Handle order submission
+  // Clear selected_address if user manually edits any address input
+  [fullnameField, contactField, add1Field, streetField, cityField, zipcodeField, countryField].forEach(field => {
+    field.addEventListener("input", () => {
+      clearSelectedAddress();
+      localStorage.removeItem("selectedAddressId");
+      selectedAddressDiv.innerHTML = `
+        <div>
+          <strong>${fullnameField.value}</strong><br>
+          ${add1Field.value}, ${streetField.value}<br>
+          ${cityField.value} - ${zipcodeField.value}, ${countryField.value}<br>
+          <small>📞 ${contactField.value}</small>
+        </div>
+      `;
+    });
+  });
+
+  // Handle form submission
   const orderForm = document.getElementById("orderForm");
   orderForm.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -261,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(() => {
           window.location.href = data.redirect_url;
         });
+        });
       } else {
         Swal.fire({
           title: "Error",
@@ -269,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
     })
-    .catch(error => {
+    .catch(() => {
       Swal.fire({
         title: "Error",
         text: "Could not place the order. Try again.",

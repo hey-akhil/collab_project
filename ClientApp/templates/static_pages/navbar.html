@@ -42,7 +42,6 @@
           <a class="nav-link" href="{% url 'profile' %}">Profile</a>
         </li>
         {% endif %}
-
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">Logout</a>
@@ -52,10 +51,9 @@
           <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         {% endif %}
-
       </ul>
     </div>
 
-    <button class="btn btn-quote" style="background-color: antiquewhite;">GET A QUOTE</button>
+    <button class="quote" >GET A QUOTE</button>
   </div>
 </nav>
