@@ -331,11 +331,12 @@ def checkout_view(request):
         'addresses': addresses,  # Pass addresses to template
     })
 
+from django.shortcuts import redirect
+
 @login_required
 def place_order(request):
     user = request.user
 
-    # Show checkout page with cart and addresses
     if request.method == "GET":
         addresses = Address.objects.filter(user=user)
         cart_items = CartItem.objects.filter(user=user)
@@ -350,7 +351,6 @@ def place_order(request):
             "addresses": addresses,
         })
 
-    # Handle placing order
     if request.method == "POST":
         selected_address_id = request.POST.get("selected_address")
         total_price = float(request.POST.get("total_price", 0))
@@ -359,9 +359,10 @@ def place_order(request):
 
         cart_items = CartItem.objects.filter(user=user)
         if not cart_items.exists():
-            return JsonResponse({"success": False, "message": "Your cart is empty."}, status=400)
+            # Save error in session and redirect back
+            request.session['order_error'] = "Your cart is empty."
+            return redirect("place_order")
 
-        # Use existing address or create new one
         if selected_address_id:
             address = get_object_or_404(Address, id=selected_address_id, user=user)
         else:
@@ -376,7 +377,6 @@ def place_order(request):
                 country=request.POST.get("county", "India")
             )
 
-        # Create order
         order = Order.objects.create(
             user=user,
             fullname=address.full_name,
@@ -391,7 +391,6 @@ def place_order(request):
             final_total=final_total
         )
 
-        # Add items to the order
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -400,17 +399,14 @@ def place_order(request):
                 line_total=item.subtotal
             )
 
-        # Clear the cart after order placement
         cart_items.delete()
 
-        # Return JSON response for SweetAlert + redirect
-        return JsonResponse({
-            "success": True,
-            "message": "Your order has been placed successfully!",
-            "redirect_url": "/my-orders"
-        })
+        # ✅ Set success flag for SweetAlert
+        request.session['order_success'] = True
 
-    return JsonResponse({"success": False, "message": "Invalid request."}, status=400)
+        return redirect("my_orders")  # your orders page view name
+
+    return redirect("place_order")
 
 @login_required
 def update_cart_quantity(request, item_id):

@@ -1,0 +1,121 @@
+.cart-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px;
+    color: black;
+}
+
+#cartTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#cartTable th,
+#cartTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#cartTable thead tr {
+    background: #f5f5f5;
+}
+
+.qty-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.qty-value {
+    min-width: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+.cart-total {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.cart-total a.btn {
+    margin-left: 10px;
+}
+
+
+/* ========================
+   ✅ Responsive Styles
+=========================== */
+@media (max-width: 768px) {
+    .cart-container {
+        padding: 15px;
+    }
+
+    #cartTable {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    #cartTable thead {
+        display: none;
+    }
+
+    #cartTable tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    #cartTable td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 5px;
+        border: none;
+        border-bottom: 1px solid #eee;
+        font-size: 0.95rem;
+    }
+
+    #cartTable td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        flex-basis: 45%;
+    }
+
+    .qty-btn {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+    }
+
+    .qty-value {
+        font-size: 0.9rem;
+    }
+
+    .cart-total {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .cart-total h4 {
+        font-size: 1.2rem;
+    }
+
+    .cart-total a.btn {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+    }
+}
