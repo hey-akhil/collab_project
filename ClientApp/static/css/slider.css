@@ -1,33 +1,44 @@
-/* Base Styles */
+/* Base styling remains same */
+.carousel-item {
+  height: 100vh;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.h2text {
+  font-family: fantasy;
+  text-align: left;
+  color: white;
+}
+
 .carousel-caption-fixed {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 55%;
+  left: 10%;
   z-index: 10;
-  text-align: center;
+  text-align: left;
   color: #fff;
-  padding: 0 15px;
-  width: 100%;
+  max-width: 600px;
+  transform: translateY(-50%); /* Keeps text perfectly vertical-centered */
 }
 
 .carousel-caption-fixed h1 {
-  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-size: clamp(1.8rem, 4vw, 3.5rem); /* fluid scaling */
   font-weight: 800;
   text-transform: uppercase;
   line-height: 1.2;
 }
 
 .carousel-caption-fixed h2 {
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  font-weight: 600;
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
   margin-bottom: 15px;
-  font-family: fantasy;
-  color: white;
+  font-weight: 600;
 }
 
 .carousel-caption-fixed p {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
   margin-bottom: 20px;
 }
 
@@ -38,13 +49,15 @@
   font-weight: bold;
   border: none;
   padding: 10px 25px;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
 }
 .btn-custom:hover {
   background-color: #a88820;
   color: #fff;
 }
 
-/* Dot indicators (unchanged) */
+/* Indicators */
 .carousel-indicators [data-bs-target] {
   width: 12px;
   height: 12px;
@@ -57,22 +70,34 @@
   opacity: 1;
 }
 
-/* Adjust the slide height for devices */
-.carousel-item {
-  height: 100vh;
-  min-height: 500px;
-  background-size: cover;
-  background-position: center;
-}
-
+/* Tablet adjustments */
 @media (max-width: 992px) {
   .carousel-item {
     height: 70vh;
+    min-height: 400px;
+  }
+  .carousel-caption-fixed {
+    top: 50%;
+    left: 8%;
+    max-width: 500px;
   }
 }
 
+/* Mobile adjustments */
 @media (max-width: 576px) {
   .carousel-item {
-    height: 60vh;
+    height: 50vh;
+    min-height: 300px;
+  }
+  .carousel-caption-fixed {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Perfectly centers on mobile */
+    text-align: center;
+    max-width: 90%;
+  }
+  .btn-custom {
+    font-size: 0.85rem;
+    padding: 7px 16px;
   }
 }
