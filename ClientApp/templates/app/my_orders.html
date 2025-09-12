@@ -1,6 +1,7 @@
 {% extends 'static_pages/base.html' %}
 {% load static %}
 {% block start %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
   body {
@@ -96,4 +97,15 @@
   </div>
 </div>
 
+{% if request.session.order_success %}
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Order Placed!',
+        text: 'Your order has been placed successfully.',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+</script>
+{% endif %}
 {% endblock %}

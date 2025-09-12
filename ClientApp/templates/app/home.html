@@ -10,44 +10,54 @@
 </style>
 <!--------------------------------- Services Section below slider --------------------------------->
 <section class="py-5 bg-light p-5" style="background: linear-gradient(135deg, #faf5ef, #fffbe7);">
-  <div class="services">
-    <div class="service-card">
-      <h3>Bridal Mehndi</h3>
-      <p>Elegant, rich, and personalised designs for your big day.</p>
-      <a href="#">➜ LEARN MORE</a>
+  <div class="row g-3">
+
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="service-card">
+        <h3>Bridal Mehndi</h3>
+        <p>Elegant, rich, and personalised designs for your big day.</p>
+        <a href="#">➜ LEARN MORE</a>
+      </div>
     </div>
 
-    <div class="service-card">
-      <h3>Arabic Mehndi</h3>
-      <p>Modern and flowing patterns for all occasions</p>
-      <a href="#">➜ LEARN MORE</a>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="service-card">
+        <h3>Arabic Mehndi</h3>
+        <p>Modern and flowing patterns for all occasions</p>
+        <a href="#">➜ LEARN MORE</a>
+      </div>
     </div>
 
-    <div class="service-card">
-      <h3>Indian Traditional Mehndi</h3>
-      <p>Filled with cultural motifs and religious symbols.</p>
-      <a href="#">➜ LEARN MORE</a>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="service-card">
+        <h3>Indian Traditional Mehndi</h3>
+        <p>Filled with cultural motifs and religious symbols.</p>
+        <a href="#">➜ LEARN MORE</a>
+      </div>
     </div>
 
-    <div class="shipment-box">
-      <h2>Track Your Shipment</h2>
-      <hr />
-      <form>
-        <div class="input-group mb-3">
-          <input type="text" class="inp form-control" placeholder="Enter Tracking ID" aria-label="Tracking ID" />
-          <button class="btn btn-warning fw-bold" type="submit">➜</button>
-        </div>
-      </form>
-      <p>
-        Whether it’s a custom Mehndi cone delivery or a bridal booking
-        package, we ensure you stay informed.
-      </p>
+    <div class="col-12 col-md-6 col-lg-3">
+      <div class="shipment-box">
+        <h2>Track Your Shipment</h2>
+        <hr />
+        <form>
+          <div class="input-group mb-3">
+            <input type="text" class="inp form-control" placeholder="Enter Tracking ID" aria-label="Tracking ID" />
+            <button class="btn btn-warning fw-bold" type="submit">➜</button>
+          </div>
+        </form>
+        <p>
+          Whether it’s a custom Mehndi cone delivery or a bridal booking package, we ensure you stay informed.
+        </p>
+      </div>
     </div>
+
   </div>
+
 </section>
 
 <!---------------------------------------- Our story---------------------------------------->
-<section class="about-section py-1 p-4" style="margin-bottom: 110px;">
+<section class="about-section py-1 p-4" style="margin-bottom: 110px; margin-top:60px;">
   <div class="row align-items-center">
 
     <!-- Left Column -->
@@ -124,33 +134,33 @@
 <section class="stats-section">
   <div class="overlay">
     <div class="container text-center">
-      <div class="row align-items-center row2">
+      <div class="row g-3 align-items-center">
 
         <!-- Title -->
-        <div class="col-md-3 mb-4 mb-md-0 stats-intro">
+        <div class="col-12 col-md-3 stats-intro">
           <h3 class="stats-title">Our Company <br>In Numbers</h3>
           <div class="decor-line"></div>
         </div>
 
-        <div class="col-md-3 mb-4 mb-md-0 stat-box">
+        <div class=" col-12 col-sm-6 col-md-3 stat-box">
           <div class="stat-icon">
-<!--            <img src="{% static 'img/bride-icon.png' %}" alt="Brides Icon">-->
+            <!-- <img src="{% static 'img/bride-icon.png' %}" alt="Brides Icon"> -->
           </div>
           <h2 class="stats-number counter" data-target="199">0</h2>
           <p>Happy Brides Served</p>
         </div>
 
-        <div class="col-md-3 mb-4 mb-md-0 stat-box">
+        <div class="col-12 col-sm-6 col-md-3 stat-box">
           <div class="stat-icon">
-<!--            <img src="{% static 'images/location-icon.png' %}" alt="Locations Icon">-->
+            <!-- <img src="{% static 'images/location-icon.png' %}" alt="Locations Icon"> -->
           </div>
           <h2 class="stats-number counter" data-target="150">0</h2>
           <p>Locations in Hyderabad</p>
         </div>
 
-        <div class="col-md-3 stat-box">
+        <div class="col-12 col-sm-6 col-md-3 stat-box">
           <div class="stat-icon">
-<!--            <img src="{% static 'images/henna-icon.png' %}" alt="Henna Icon">-->
+            <!-- <img src="{% static 'images/henna-icon.png' %}" alt="Henna Icon"> -->
           </div>
           <h2 class="stats-number counter" data-target="200">0</h2>
           <p>Hands & Feet Designed</p>
@@ -161,7 +171,7 @@
 </section>
 <script src="{% static 'js/company_in_number.js'%}"></script>
 
-<!------------------------------------- What we offer ------------------------------------->
+<!--------`     ----------------------------- What we offer ------------------------------------->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/what_we_offer.css' %}">
 <body>

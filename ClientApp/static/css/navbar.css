@@ -16,6 +16,10 @@ body{
   margin: 0 10px;
 }
 
+.navbartoggler{
+    margin-bottom: 15px;
+}
+
 .quote {
   font-weight: bold;
   padding: 8px 16px;

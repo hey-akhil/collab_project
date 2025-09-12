@@ -18,12 +18,11 @@ body {
       color: #666;
     }
     .services {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* exactly 4 per row */
-    gap: 20px;
-    padding: 0 30px 50px;
-  }
-
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 0 30px 50px;
+    }
     .service-card {
       background: #fff;
       border-radius: 8px;

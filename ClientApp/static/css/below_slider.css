@@ -12,6 +12,7 @@
   padding: 25px;
   border-radius: 8px;
   text-align: center;
+  min-height: 280px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
   transition: all 0.3s ease-in-out;
 }
@@ -68,7 +69,6 @@
     grid-template-columns: 1fr;
   }
 }
-
 .inp{
     height: 46px;
 }
