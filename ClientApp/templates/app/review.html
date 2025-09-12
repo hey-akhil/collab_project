@@ -1,31 +1,40 @@
 {% block start %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/review.css' %}">
+
 <div class="container">
   <h2>✨ Customer Reviews ✨</h2>
+
+  <!-- Carousel Wrapper -->
   <div class="carousel-wrapper">
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/10.jpg">
-      <h5>Ayesha</h5>
-      <p>“The mehendi designs were stunning, and lasted for weeks! Highly recommended ✨”</p>
-      <div class="stars">★★★★★</div>
-    </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/21.jpg">
-      <h5>Priya</h5>
-      <p>“Such intricate details and professional service. Loved my bridal mehendi ❤️”</p>
-      <div class="stars">★★★★★</div>
-    </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/32.jpg">
-      <h5>Sara</h5>
-      <p>“The artist was on time, very friendly, and the design was just perfect 🌸”</p>
-      <div class="stars">★★★★☆</div>
-    </div>
-    <div class="carousel-card">
+    <!-- Carousel Inner to support scroll on mobile -->
+    <div class="carousel-inner">
+      <!-- Review 1 -->
+      <div class="carousel-card active">
+        <img class="review-photo" src="https://randomuser.me/api/portraits/women/10.jpg">
+        <h5>Ayesha</h5>
+        <p>“The mehendi designs were stunning, and lasted for weeks! Highly recommended ✨”</p>
+        <div class="stars">★★★★★</div>
+      </div>
+      <!-- Review 2 -->
+      <div class="carousel-card next">
+        <img class="review-photo" src="https://randomuser.me/api/portraits/women/21.jpg">
+        <h5>Priya</h5>
+        <p>“Such intricate details and professional service. Loved my bridal mehndi ❤️”</p>
+        <div class="stars">★★★★★</div>
+      </div>
+      <!-- Review 3 -->
+      <div class="carousel-card prev">
+        <img class="review-photo" src="https://randomuser.me/api/portraits/women/32.jpg">
+        <h5>Sara</h5>
+        <p>“The artist was on time, very friendly, and the design was just perfect 🌸”</p>
+        <div class="stars">★★★★☆</div>
+      </div>
+      <!-- Add more cards as needed -->
+      <div class="carousel-card">
       <img class="review-photo" src="https://randomuser.me/api/portraits/women/45.jpg">
       <h5>Neha</h5>
-      <p>“Beautiful bridal mehendi with unique patterns. My guests loved it!”</p>
+      <p>“Beautiful bridal mehndi with unique patterns. My guests loved it!”</p>
       <div class="stars">★★★★★</div>
     </div>
     <div class="carousel-card">
@@ -40,32 +49,9 @@
       <p>“Lovely traditional designs that matched my outfit perfectly 🌺”</p>
       <div class="stars">★★★★★</div>
     </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/72.jpg">
-      <h5>Ananya</h5>
-      <p>“She is very professional and talented. My mehendi stayed dark for days 🌿”</p>
-      <div class="stars">★★★★★</div>
-    </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/83.jpg">
-      <h5>Simran</h5>
-      <p>“Best mehendi experience ever. She designed exactly what I wanted 💕”</p>
-      <div class="stars">★★★★★</div>
-    </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/92.jpg">
-      <h5>Meera</h5>
-      <p>“Excellent service! She came on time and worked so patiently 🌼”</p>
-      <div class="stars">★★★★☆</div>
-    </div>
-    <div class="carousel-card">
-      <img class="review-photo" src="https://randomuser.me/api/portraits/women/99.jpg">
-      <h5>Fatima</h5>
-      <p>“Absolutely gorgeous mehendi! Everyone kept asking who did it ✨”</p>
-      <div class="stars">★★★★★</div>
     </div>
   </div>
 
-  <script src="{%static 'js/review.js' %}"></script>
-  </div>
-  {% endblock %}
+  <script src="{% static 'js/review.js' %}"></script>
+</div>
+{% endblock %}
